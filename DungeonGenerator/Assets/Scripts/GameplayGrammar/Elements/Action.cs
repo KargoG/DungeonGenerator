@@ -35,4 +35,9 @@ public class Action : GameplayElement
     {
         return _entitiesThisCanBePerformedOn.Contains(entity);
     }
+
+    public int GetAmountOfEntities()
+    {
+        return _entitiesThisCanBePerformedOn.Count;
+    }
 }

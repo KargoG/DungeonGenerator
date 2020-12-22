@@ -23,4 +23,20 @@ public class Gameplay : ScriptableObject
 
     private Consumable _consumable;
     public Consumable Consumable { get { return _consumable; } }
+
+    public static Gameplay CreateGameplay(Action action, Entity entity, Ability ability, Consumable consumable)
+    {
+        Gameplay createdGameplay = new Gameplay();
+        createdGameplay._action = action;
+        createdGameplay._entity = entity;
+        createdGameplay._ability = ability;
+        createdGameplay._consumable = consumable;
+
+        return createdGameplay;
+    }
+
+    private Gameplay()
+    {
+
+    }
 }

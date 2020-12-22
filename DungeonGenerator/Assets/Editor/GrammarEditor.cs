@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEditor;
 
 public class GrammarEditor : EditorWindow
@@ -62,6 +63,8 @@ public class GrammarEditor : EditorWindow
     {
         // Window Code
 
+        List<Gameplay> gameplayToDelete = new List<Gameplay>();
+
         EditorGUILayout.LabelField("Defined Gameplay:");
 
         for (int i = 0; i < _gameplay.GetAmountOfGameplay(); i++)
@@ -82,25 +85,29 @@ public class GrammarEditor : EditorWindow
                 EditorGUILayout.LabelField("with a " + toShow.Consumable.Name);
             }
 
-            GUIStyle buttonStyle = GUIStyle.none;
-            buttonStyle.alignment = TextAnchor.MiddleRight;
 
-            if (GUILayout.Button("Edit", buttonStyle))
+            if (GUILayout.Button("Edit"))
             {
                 // TODO
             }
 
-            if (GUILayout.Button("Delete", buttonStyle))
+            if (GUILayout.Button("Delete"))
             {
-                // TODO
+                gameplayToDelete.Add(toShow);
             }
 
             EditorGUILayout.EndHorizontal();
         }
 
+        // Deleting all that needs to go
+        foreach (Gameplay gameplay in gameplayToDelete)
+        {
+            _gameplay.RemoveGameplay(gameplay);
+        }
+
         if (GUILayout.Button("New Gameplay"))
         {
-            GameplayCreator.ShowGameplayCreator(_gameplayElements);
+            GameplayCreator.ShowGameplayCreator(_gameplayElements, _gameplay);
         }
 
     }

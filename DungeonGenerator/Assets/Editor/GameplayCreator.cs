@@ -19,9 +19,10 @@ public class GameplayCreator : EditorWindow
     private static string[] _abilityNames;
     private static string[] _consumableNames;
 
-    public static void ShowGameplayCreator(GameplayElementContainer gameplayElements)
+    public static void ShowGameplayCreator(GameplayElementContainer gameplayElements, GameplayContainer gameplay)
     {
         _gameplayElements = gameplayElements;
+        _gameplay = gameplay;
 
         _actions = _gameplayElements.GetAllElements(GameplayElementTypes.Action);
         _entities = _gameplayElements.GetAllElements(GameplayElementTypes.Entity);
@@ -82,15 +83,50 @@ public class GameplayCreator : EditorWindow
     {
         EditorGUILayout.BeginHorizontal();
 
+        string[] actionNamesToUse = _actionNames;
+        string[] entityNamesToUse = _entityNames;
+
+        if (_selectedActionIndex > 0)
+        {
+            Action selectedAction = _actions[_selectedActionIndex - 1] as Action;
+
+            string[] availableEntityNames = selectedAction.GetEntityNames();
+
+            entityNamesToUse = new string[availableEntityNames.Length + 1];
+            entityNamesToUse[0] = "      ";
+
+            for (int i = 1; i < availableEntityNames.Length + 1; i++)
+            {
+                entityNamesToUse[i] = availableEntityNames[i - 1];
+            }
+        }
+        if (_selectedEntityIndex > 0)
+        {
+            Entity selectedEntity = _entities[_selectedEntityIndex - 1] as Entity;
+
+            string[] availableActionNames = selectedEntity.GetActionNames();
+
+            actionNamesToUse = new string[availableActionNames.Length + 1];
+            actionNamesToUse[0] = "     ";
+
+            for (int i = 1; i < availableActionNames.Length + 1; i++)
+            {
+                actionNamesToUse[i] = availableActionNames[i - 1];
+            }
+        }
+
+
         EditorGUILayout.BeginVertical();
         EditorGUILayout.LabelField("Action");
-        _selectedActionIndex = EditorGUILayout.Popup(_selectedActionIndex, _actionNames);
+        _selectedActionIndex = EditorGUILayout.Popup(_selectedActionIndex, actionNamesToUse);
         EditorGUILayout.EndVertical();
+
 
         EditorGUILayout.BeginVertical();
         EditorGUILayout.LabelField("Entity");
-        _selectedEntityIndex = EditorGUILayout.Popup(_selectedEntityIndex, _entityNames);
+        _selectedEntityIndex = EditorGUILayout.Popup(_selectedEntityIndex, entityNamesToUse);
         EditorGUILayout.EndVertical();
+
 
         EditorGUILayout.BeginVertical();
         EditorGUILayout.Space(1, true);
@@ -99,6 +135,7 @@ public class GameplayCreator : EditorWindow
 
 
         EditorGUILayout.BeginVertical();
+
         _abilityOrConsumableIndex = EditorGUILayout.Popup(_abilityOrConsumableIndex, new []{"Nothing", "Ability", "Consumable" });
 
         if (_abilityOrConsumableIndex == 0)
@@ -110,12 +147,19 @@ public class GameplayCreator : EditorWindow
 
         EditorGUILayout.EndVertical();
 
+
         EditorGUILayout.EndHorizontal();
 
-
-
-        if (GUILayout.Button("Create"))
+        if (GUILayout.Button("Create") && _selectedActionIndex > 0 && _selectedEntityIndex > 0)
         {
+            Gameplay createdGameplay = Gameplay.CreateGameplay(
+                _actions[_selectedActionIndex-1] as Action,
+                _entities[_selectedEntityIndex-1] as Entity, 
+                _selectedAbilityIndex > 0 ? _abilities[_selectedAbilityIndex - 1] as Ability : null,
+                _selectedConsumableIndex > 0 ? _consumables[_selectedConsumableIndex - 1] as Consumable : null);
+
+            _gameplay.AddGameplay(createdGameplay);
+
             _window.Close();
         }
 

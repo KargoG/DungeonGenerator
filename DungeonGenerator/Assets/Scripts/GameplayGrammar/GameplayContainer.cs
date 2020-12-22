@@ -16,10 +16,13 @@ public class GameplayContainer : ScriptableObject
         return _definedGameplay[i];
     }
 
-
     public int GetAmountOfGameplay()
     {
         return _definedGameplay.Count;
     }
 
+    public void RemoveGameplay(Gameplay toRemove)
+    {
+        _definedGameplay.Remove(toRemove);
+    }
 }
