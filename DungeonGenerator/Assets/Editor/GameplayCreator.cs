@@ -83,8 +83,7 @@ public class GameplayCreator : EditorWindow
     {
         EditorGUILayout.BeginHorizontal();
 
-        string[] actionNamesToUse = _actionNames;
-        string[] entityNamesToUse = _entityNames;
+        string[] entityNamesToUse = new string[0];
 
         if (_selectedActionIndex > 0)
         {
@@ -100,31 +99,18 @@ public class GameplayCreator : EditorWindow
                 entityNamesToUse[i] = availableEntityNames[i - 1];
             }
         }
-        if (_selectedEntityIndex > 0)
-        {
-            Entity selectedEntity = _entities[_selectedEntityIndex - 1] as Entity;
-
-            string[] availableActionNames = selectedEntity.GetActionNames();
-
-            actionNamesToUse = new string[availableActionNames.Length + 1];
-            actionNamesToUse[0] = "     ";
-
-            for (int i = 1; i < availableActionNames.Length + 1; i++)
-            {
-                actionNamesToUse[i] = availableActionNames[i - 1];
-            }
-        }
-
 
         EditorGUILayout.BeginVertical();
         EditorGUILayout.LabelField("Action");
-        _selectedActionIndex = EditorGUILayout.Popup(_selectedActionIndex, actionNamesToUse);
+        _selectedActionIndex = EditorGUILayout.Popup(_selectedActionIndex, _actionNames);
         EditorGUILayout.EndVertical();
 
 
         EditorGUILayout.BeginVertical();
         EditorGUILayout.LabelField("Entity");
+        GUI.enabled = _selectedActionIndex > 0;
         _selectedEntityIndex = EditorGUILayout.Popup(_selectedEntityIndex, entityNamesToUse);
+        GUI.enabled = true;
         EditorGUILayout.EndVertical();
 
 
