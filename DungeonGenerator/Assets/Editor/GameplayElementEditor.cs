@@ -7,11 +7,6 @@ public class GameplayElementEditor : EditorWindow
 {
     private static GameplayElementContainer _gameplayElements;
 
-    //private static List<Action> _editableActions;
-    //private static List<Entity> _editableEntities;
-    //private static List<Ability> _editableAbilities;
-    //private static List<Consumable> _editableConsumables;
-
     [MenuItem("Window/DungeonCreator/GameplayElementEditor")]
     public static void ShowWindow()
     {
@@ -20,37 +15,27 @@ public class GameplayElementEditor : EditorWindow
         if (_gameplayElements == null)
         {
             if (assetsGUID.Length > 0)
-                LoadGameplayContainer(assetsGUID[0]);
+                LoadGameplayElementContainer(assetsGUID[0]);
             else
-                CreateGameplayContainer();
+                CreateGameplayElementContainer();
         }
-
-        //if (_editableActions == null)
-        //    _editableActions = _gameplayElements.GetAllElements<Action>();
-
-        //if (_editableEntities == null)
-        //    _editableEntities = _gameplayElements.GetAllElements<Entity>();
-
-        //if (_editableAbilities == null)
-        //    _editableAbilities = _gameplayElements.GetAllElements<Ability>();
-
-        //if (_editableConsumables == null)
-        //    _editableConsumables = _gameplayElements.GetAllElements<Consumable>();
 
         GetWindow<GameplayElementEditor>();
     }
 
-    private static void CreateGameplayContainer()
+    #region LoadingData
+    private static void CreateGameplayElementContainer()
     {
         _gameplayElements = ScriptableObject.CreateInstance<GameplayElementContainer>();
         AssetDatabase.CreateAsset(_gameplayElements, "Assets/ScriptableObjects/GameplayElements.asset");
     }
 
-    private static void LoadGameplayContainer(string guid)
+    private static void LoadGameplayElementContainer(string guid)
     {
         string assetPath = AssetDatabase.GUIDToAssetPath(guid);
         _gameplayElements = AssetDatabase.LoadAssetAtPath<GameplayElementContainer>(assetPath);
     }
+    #endregion
 
     private GameplayElementTypes _currentlyEditedType = GameplayElementTypes.Entity;
 
