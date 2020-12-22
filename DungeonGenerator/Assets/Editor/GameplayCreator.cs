@@ -138,9 +138,10 @@ public class GameplayCreator : EditorWindow
 
         if (GUILayout.Button("Create") && _selectedActionIndex > 0 && _selectedEntityIndex > 0)
         {
+            Action selectedAction = _actions[_selectedActionIndex - 1] as Action;
             Gameplay createdGameplay = Gameplay.CreateGameplay(
-                _actions[_selectedActionIndex-1] as Action,
-                _entities[_selectedEntityIndex-1] as Entity, 
+                selectedAction,
+                selectedAction.GetEntity(_selectedEntityIndex-1), 
                 _selectedAbilityIndex > 0 ? _abilities[_selectedAbilityIndex - 1] as Ability : null,
                 _selectedConsumableIndex > 0 ? _consumables[_selectedConsumableIndex - 1] as Consumable : null);
 

@@ -40,4 +40,9 @@ public class Action : GameplayElement
     {
         return _entitiesThisCanBePerformedOn.Count;
     }
+
+    public Entity GetEntity(int selectedEntityIndex)
+    {
+        return _entitiesThisCanBePerformedOn[selectedEntityIndex];
+    }
 }
