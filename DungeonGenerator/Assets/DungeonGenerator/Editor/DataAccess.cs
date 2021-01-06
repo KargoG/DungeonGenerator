@@ -55,11 +55,13 @@ public class DataAccess : MonoBehaviour
     {
         string assetsGUID = AssetDatabase.AssetPathToGUID("Assets/DungeonGenerator/ScriptableObjects/GameplayElements.asset");
 
+        //print(assetsGUID);
+
         if (_gameplayElements == null)
         {
-            if (assetsGUID.Length > 0)
-                LoadGameplayElementContainer(assetsGUID);
-            else
+            _gameplayElements = AssetDatabase.LoadAssetAtPath<GameplayElementContainer>("Assets/DungeonGenerator/ScriptableObjects/GameplayElements.asset");
+            //LoadGameplayElementContainer(assetsGUID);
+            if(!_gameplayElements)
                 CreateGameplayElementContainer();
         }
 

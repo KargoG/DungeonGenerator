@@ -44,6 +44,7 @@ public class GameplayElementEditor : EditorWindow
         _selectedElement = EditorGUILayout.Popup("Object to Edit", _selectedElement, _editableGameplayStringRepresentation);
 
         EditorGUILayout.Space();
+
         if (_selectedElement != _editableGameplayStringRepresentation.Length - 1)
             ShowEditingElements();
         else

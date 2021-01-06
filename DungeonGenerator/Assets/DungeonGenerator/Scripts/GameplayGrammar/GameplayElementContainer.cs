@@ -3,19 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 public class GameplayElementContainer : ScriptableObject
 {
     [SerializeField]
-    private List<GameplayElement>[] gameplayElementContainer = new List<GameplayElement>[]
-    {
-        new List<GameplayElement>(), // Action
-        new List<GameplayElement>(), // Entity
-        new List<GameplayElement>(), // Ability
-        new List<GameplayElement>() // Consumable
-    };
+    private List<GameplayElement> _actionContainer = new List<GameplayElement>();
+    [SerializeField]
+    private List<GameplayElement> _entityContainer = new List<GameplayElement>();
+    [SerializeField]
+    private List<GameplayElement> _abilityContainer = new List<GameplayElement>();
+    [SerializeField]
+    private List<GameplayElement> _consumableContainer = new List<GameplayElement>();
 
-
-#region usingTemplate
+    #region usingTemplate
     //public void AddElement<T>(T newElement) where T : GameplayElement
     //{
     //    List<T> list = gameplayElementContainer[GetContainer<T>()] as List<T>;
@@ -57,10 +57,32 @@ public class GameplayElementContainer : ScriptableObject
     }
 #endregion
 
+private List<GameplayElement> GetList(GameplayElementTypes elementType)
+{
+    switch (elementType)
+    {
+        case GameplayElementTypes.Action:
+            return _actionContainer;
+            break;
+        case GameplayElementTypes.Entity:
+            return _entityContainer;
+            break;
+        case GameplayElementTypes.Ability:
+            return _abilityContainer;
+            break;
+        case GameplayElementTypes.Consumable:
+            return _consumableContainer;
+            break;
+    }
+
+    return new List<GameplayElement>();
+}
+
 #region usingEnum
     public void AddElement(GameplayElement newElement, GameplayElementTypes elementType)
     {
-        List<GameplayElement> list = gameplayElementContainer[(int)elementType];
+        List<GameplayElement> list = GetList(elementType);
+
 
         if (!list.Contains(newElement))
         {
@@ -69,7 +91,7 @@ public class GameplayElementContainer : ScriptableObject
     }
     public GameplayElement GetElement(int elementNumber, GameplayElementTypes elementType)
     {
-        List<GameplayElement> list = gameplayElementContainer[(int)elementType];
+        List<GameplayElement> list = GetList(elementType);
 
         if (list.Count > elementNumber)
         {
@@ -80,7 +102,7 @@ public class GameplayElementContainer : ScriptableObject
     }
     public void DeleteElement(GameplayElement toDelete, GameplayElementTypes elementType)
     {
-        List<GameplayElement> list = gameplayElementContainer[(int)elementType];
+        List<GameplayElement> list = GetList(elementType);
         if (list.Contains(toDelete))
         {
             list.Remove(toDelete);
@@ -88,7 +110,7 @@ public class GameplayElementContainer : ScriptableObject
     }
     public List<GameplayElement> GetAllElements(GameplayElementTypes elementType)
     {
-        return gameplayElementContainer[(int)elementType];
+        return GetList(elementType);
     }
 #endregion
 

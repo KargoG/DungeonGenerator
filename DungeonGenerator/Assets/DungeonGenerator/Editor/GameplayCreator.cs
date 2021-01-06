@@ -146,7 +146,5 @@ public class GameplayCreator : EditorWindow
 
             _window.Close();
         }
-
-        AssetDatabase.SaveAssets();
     }
 }

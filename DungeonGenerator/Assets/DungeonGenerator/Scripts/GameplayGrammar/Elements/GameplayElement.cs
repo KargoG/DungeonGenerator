@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public abstract class GameplayElement
+public abstract class GameplayElement : ScriptableObject
 {
-    private string _name;
+    [SerializeField] private string _name;
     public string Name { get{ return _name; } }
 
     public GameplayElement(string name)

@@ -6,6 +6,7 @@ using UnityEngine;
 [Serializable]
 public class Action : GameplayElement
 {
+    [SerializeField]
     private List<Entity> _entitiesThisCanBePerformedOn = new List<Entity>();
 
     public Action(string name) : base(name)
