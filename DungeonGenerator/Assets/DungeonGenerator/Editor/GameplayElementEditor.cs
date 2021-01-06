@@ -5,37 +5,11 @@ using UnityEngine;
 
 public class GameplayElementEditor : EditorWindow
 {
-    private static GameplayElementContainer _gameplayElements;
-
     [MenuItem("Window/DungeonCreator/GameplayElementEditor")]
     public static void ShowWindow()
     {
-        string[] assetsGUID = AssetDatabase.FindAssets("t:GameplayElementContainer");
-
-        if (_gameplayElements == null)
-        {
-            if (assetsGUID.Length > 0)
-                LoadGameplayElementContainer(assetsGUID[0]);
-            else
-                CreateGameplayElementContainer();
-        }
-
         GetWindow<GameplayElementEditor>();
     }
-
-    #region LoadingData
-    private static void CreateGameplayElementContainer()
-    {
-        _gameplayElements = ScriptableObject.CreateInstance<GameplayElementContainer>();
-        AssetDatabase.CreateAsset(_gameplayElements, "Assets/ScriptableObjects/GameplayElements.asset");
-    }
-
-    private static void LoadGameplayElementContainer(string guid)
-    {
-        string assetPath = AssetDatabase.GUIDToAssetPath(guid);
-        _gameplayElements = AssetDatabase.LoadAssetAtPath<GameplayElementContainer>(assetPath);
-    }
-    #endregion
 
     private GameplayElementTypes _currentlyEditedType = GameplayElementTypes.Entity;
 
@@ -45,6 +19,7 @@ public class GameplayElementEditor : EditorWindow
 
     void OnGUI()
     {
+
         GameplayElementTypes lastEditedType = _currentlyEditedType;
         _currentlyEditedType = (GameplayElementTypes) EditorGUILayout.EnumPopup("Gamplay Element", _currentlyEditedType);
 
@@ -56,11 +31,11 @@ public class GameplayElementEditor : EditorWindow
 
 
         if (_editableGameplayStringRepresentation == null)
-            _editableGameplayStringRepresentation = new string[_gameplayElements.GetAllElements(_currentlyEditedType).Count + 1];
+            _editableGameplayStringRepresentation = new string[DataAccess.GetGameplayElementContainer().GetAllElements(_currentlyEditedType).Count + 1];
 
-        for (int i = 0; i < _gameplayElements.GetAllElements(_currentlyEditedType).Count; i++)
+        for (int i = 0; i < DataAccess.GetGameplayElementContainer().GetAllElements(_currentlyEditedType).Count; i++)
         {
-            _editableGameplayStringRepresentation[i] = _gameplayElements.GetElement(i, _currentlyEditedType).Name;
+            _editableGameplayStringRepresentation[i] = DataAccess.GetGameplayElementContainer().GetElement(i, _currentlyEditedType).Name;
         }
 
 
@@ -75,6 +50,8 @@ public class GameplayElementEditor : EditorWindow
         {
             ShowCreationElements();
         }
+
+        AssetDatabase.SaveAssets();
     }
 
     #region Creation
@@ -128,16 +105,16 @@ public class GameplayElementEditor : EditorWindow
             switch (_currentlyEditedType)
             {
                 case GameplayElementTypes.Action:
-                    _gameplayElements.AddElement(new Action(_newEntityName), GameplayElementTypes.Action);
+                    DataAccess.GetGameplayElementContainer().AddElement(new Action(_newEntityName), GameplayElementTypes.Action);
                     break;
                 case GameplayElementTypes.Entity:
-                    _gameplayElements.AddElement(new Entity(_newEntityName), GameplayElementTypes.Entity);
+                    DataAccess.GetGameplayElementContainer().AddElement(new Entity(_newEntityName), GameplayElementTypes.Entity);
                     break;
                 case GameplayElementTypes.Ability:
-                    _gameplayElements.AddElement(new Ability(_newEntityName), GameplayElementTypes.Ability);
+                    DataAccess.GetGameplayElementContainer().AddElement(new Ability(_newEntityName), GameplayElementTypes.Ability);
                     break;
                 case GameplayElementTypes.Consumable:
-                    _gameplayElements.AddElement(new Consumable(_newEntityName), GameplayElementTypes.Consumable);
+                    DataAccess.GetGameplayElementContainer().AddElement(new Consumable(_newEntityName), GameplayElementTypes.Consumable);
                     break;
             }
 
@@ -185,9 +162,9 @@ public class GameplayElementEditor : EditorWindow
 
         if (_shouldShowEntities)
         {
-            Action toEdit = _gameplayElements.GetElement(_selectedElement, GameplayElementTypes.Action) as Action;
+            Action toEdit = DataAccess.GetGameplayElementContainer().GetElement(_selectedElement, GameplayElementTypes.Action) as Action;
 
-            List<GameplayElement> entities = _gameplayElements.GetAllElements(GameplayElementTypes.Entity);
+            List<GameplayElement> entities = DataAccess.GetGameplayElementContainer().GetAllElements(GameplayElementTypes.Entity);
 
             foreach (Entity entity in entities)
             {
@@ -196,12 +173,12 @@ public class GameplayElementEditor : EditorWindow
                 if (containsAction && !shouldContain)
                 {
                     toEdit.RemoveEntityToPerformOn(entity);
-                    entity.RemoveActionThatCanPerformOnThis(toEdit);
+                    //entity.RemoveActionThatCanPerformOnThis(toEdit);
                 }
                 else if (!containsAction && shouldContain)
                 {
                     toEdit.AddEntityToPerformOn(entity);
-                    entity.AddActionThatCanPerformOnThis(toEdit);
+                    //entity.AddActionThatCanPerformOnThis(toEdit);
                 }
             }
         }
@@ -210,32 +187,32 @@ public class GameplayElementEditor : EditorWindow
     private bool _shouldShowActions = false;
     void ShowEntityEditing()
     {
-        EditorGUILayout.Space();
+        //EditorGUILayout.Space();
 
-        _shouldShowActions = EditorGUILayout.Foldout(_shouldShowActions, "Actions");
+        //_shouldShowActions = EditorGUILayout.Foldout(_shouldShowActions, "Actions");
 
-        if (_shouldShowActions)
-        {
-            Entity toEdit = _gameplayElements.GetElement(_selectedElement, GameplayElementTypes.Entity) as Entity;
+        //if (_shouldShowActions)
+        //{
+        //    Entity toEdit = DataAccess.GetGameplayElementContainer().GetElement(_selectedElement, GameplayElementTypes.Entity) as Entity;
 
-            List<GameplayElement> actions = _gameplayElements.GetAllElements(GameplayElementTypes.Action);
+        //    List<GameplayElement> actions = DataAccess.GetGameplayElementContainer().GetAllElements(GameplayElementTypes.Action);
 
-            foreach (Action action in actions)
-            {
-                bool containsAction = toEdit.ContainsAction(action);
-                bool shouldContain = EditorGUILayout.Toggle(action.Name, containsAction);
-                if (containsAction && !shouldContain)
-                {
-                    toEdit.RemoveActionThatCanPerformOnThis(action);
-                    action.RemoveEntityToPerformOn(toEdit);
-                }
-                else if (!containsAction && shouldContain)
-                {
-                    toEdit.AddActionThatCanPerformOnThis(action);
-                    action.AddEntityToPerformOn(toEdit);
-                }
-            }
-        }
+        //    foreach (Action action in actions)
+        //    {
+        //        bool containsAction = toEdit.ContainsAction(action);
+        //        bool shouldContain = EditorGUILayout.Toggle(action.Name, containsAction);
+        //        if (containsAction && !shouldContain)
+        //        {
+        //            toEdit.RemoveActionThatCanPerformOnThis(action);
+        //            action.RemoveEntityToPerformOn(toEdit);
+        //        }
+        //        else if (!containsAction && shouldContain)
+        //        {
+        //            toEdit.AddActionThatCanPerformOnThis(action);
+        //            action.AddEntityToPerformOn(toEdit);
+        //        }
+        //    }
+        //}
     }
     void ShowAbilityEditing()
     {
@@ -249,7 +226,16 @@ public class GameplayElementEditor : EditorWindow
     {
         if (GUILayout.Button("Delete"))
         {
-            _gameplayElements.DeleteElement(_gameplayElements.GetElement(_selectedElement, _currentlyEditedType), _currentlyEditedType);
+            GameplayContainer allGameplay = DataAccess.GetGameplayContainer();
+
+            if (allGameplay.UsesGameplayElement(
+                DataAccess.GetGameplayElementContainer().GetElement(_selectedElement, _currentlyEditedType),
+                _currentlyEditedType))
+            {
+                ErrorWindow.ShowWindow("You cant delete a gameplay element if it is still used in defined gameplay!", null);
+            }
+            else
+                DataAccess.GetGameplayElementContainer().DeleteElement(DataAccess.GetGameplayElementContainer().GetElement(_selectedElement, _currentlyEditedType), _currentlyEditedType);
 
             _editableGameplayStringRepresentation = null;
         }

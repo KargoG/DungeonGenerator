@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class GameplayElementContainer : ScriptableObject
 {
+    [SerializeField]
     private List<GameplayElement>[] gameplayElementContainer = new List<GameplayElement>[]
     {
         new List<GameplayElement>(), // Action
@@ -12,11 +13,6 @@ public class GameplayElementContainer : ScriptableObject
         new List<GameplayElement>(), // Ability
         new List<GameplayElement>() // Consumable
     };
-
-    //private List<Action> _actions = new List<Action>();
-    //private List<Entity> _entities = new List<Entity>();
-    //private List<Ability> _abilities = new List<Ability>();
-    //private List<Consumable> _consumables = new List<Consumable>();
 
 
 #region usingTemplate

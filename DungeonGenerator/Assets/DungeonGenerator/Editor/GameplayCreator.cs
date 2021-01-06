@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class GameplayCreator : EditorWindow
 {
-    private static GameplayElementContainer _gameplayElements;
-    private static GameplayContainer _gameplay;
     private static GameplayCreator _window;
 
     private static List<GameplayElement> _actions;
@@ -19,15 +17,13 @@ public class GameplayCreator : EditorWindow
     private static string[] _abilityNames;
     private static string[] _consumableNames;
 
-    public static void ShowGameplayCreator(GameplayElementContainer gameplayElements, GameplayContainer gameplay)
+    public static void ShowGameplayCreator()
     {
-        _gameplayElements = gameplayElements;
-        _gameplay = gameplay;
 
-        _actions = _gameplayElements.GetAllElements(GameplayElementTypes.Action);
-        _entities = _gameplayElements.GetAllElements(GameplayElementTypes.Entity);
-        _abilities = _gameplayElements.GetAllElements(GameplayElementTypes.Ability);
-        _consumables = _gameplayElements.GetAllElements(GameplayElementTypes.Consumable);
+        _actions = DataAccess.GetGameplayElementContainer().GetAllElements(GameplayElementTypes.Action);
+        _entities = DataAccess.GetGameplayElementContainer().GetAllElements(GameplayElementTypes.Entity);
+        _abilities = DataAccess.GetGameplayElementContainer().GetAllElements(GameplayElementTypes.Ability);
+        _consumables = DataAccess.GetGameplayElementContainer().GetAllElements(GameplayElementTypes.Consumable);
 
         _actionNames = new string[_actions.Count + 1];
         _entityNames = new string[_entities.Count + 1];
@@ -130,6 +126,7 @@ public class GameplayCreator : EditorWindow
             _selectedAbilityIndex = EditorGUILayout.Popup(_selectedAbilityIndex, _abilityNames);
         else if(_abilityOrConsumableIndex == 2)
             _selectedConsumableIndex = EditorGUILayout.Popup(_selectedConsumableIndex, _consumableNames);
+        
 
         EditorGUILayout.EndVertical();
 
@@ -145,10 +142,11 @@ public class GameplayCreator : EditorWindow
                 _selectedAbilityIndex > 0 ? _abilities[_selectedAbilityIndex - 1] as Ability : null,
                 _selectedConsumableIndex > 0 ? _consumables[_selectedConsumableIndex - 1] as Consumable : null);
 
-            _gameplay.AddGameplay(createdGameplay);
+            DataAccess.GetGameplayContainer().AddGameplay(createdGameplay);
 
             _window.Close();
         }
 
+        AssetDatabase.SaveAssets();
     }
 }

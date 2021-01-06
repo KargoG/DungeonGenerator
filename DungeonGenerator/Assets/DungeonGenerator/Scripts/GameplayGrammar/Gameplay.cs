@@ -26,7 +26,7 @@ public class Gameplay : ScriptableObject
 
     public static Gameplay CreateGameplay(Action action, Entity entity, Ability ability, Consumable consumable)
     {
-        Gameplay createdGameplay = new Gameplay();
+        Gameplay createdGameplay = CreateInstance<Gameplay>();
         createdGameplay._action = action;
         createdGameplay._entity = entity;
         createdGameplay._ability = ability;
