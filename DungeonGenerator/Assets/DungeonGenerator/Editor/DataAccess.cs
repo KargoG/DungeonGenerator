@@ -53,8 +53,6 @@ public class DataAccess : MonoBehaviour
 
     public static GameplayElementContainer GetGameplayElementContainer()
     {
-        
-        //string[] assetsGUID = AssetDatabase.FindAssets("t:GameplayElementContainer");
         string assetsGUID = AssetDatabase.AssetPathToGUID("Assets/DungeonGenerator/ScriptableObjects/GameplayElements.asset");
 
         if (_gameplayElements == null)

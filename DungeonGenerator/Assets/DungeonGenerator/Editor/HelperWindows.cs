@@ -9,6 +9,7 @@ public class WarningWindow : EditorWindow
 {
     private UnityAction _confirmationAction;
     private string _text;
+    private bool _performedAction = false;
 
     public static WarningWindow ShowWindow(string textToShow, UnityAction confirmationAction)
     {
@@ -22,15 +23,21 @@ public class WarningWindow : EditorWindow
 
     void OnGUI()
     {
-        EditorGUILayout.TextArea(_text);
+        EditorGUILayout.LabelField(_text);
 
         EditorGUILayout.BeginHorizontal();
         if (GUILayout.Button("Okay"))
         {
             _confirmationAction?.Invoke();
+            _performedAction = true;
             this.Close();
         }
         EditorGUILayout.EndHorizontal();
+    }
+    private void OnDestroy()
+    {
+        if (!_performedAction)
+            _confirmationAction?.Invoke();
     }
 }
 
@@ -38,6 +45,7 @@ public class ErrorWindow : EditorWindow
 {
     private UnityAction _confirmationAction;
     private string _text;
+    private bool _performedAction = false;
 
     public static ErrorWindow ShowWindow(string textToShow, UnityAction confirmationAction)
     {
@@ -51,15 +59,22 @@ public class ErrorWindow : EditorWindow
 
     void OnGUI()
     {
-        EditorGUILayout.TextArea(_text);
+        EditorGUILayout.LabelField(_text);
 
         EditorGUILayout.BeginHorizontal();
         if (GUILayout.Button("Okay"))
         {
             _confirmationAction?.Invoke();
+            _performedAction = true;
             this.Close();
         }
         EditorGUILayout.EndHorizontal();
+    }
+
+    private void OnDestroy()
+    {
+        if (!_performedAction)
+            _confirmationAction?.Invoke();
     }
 }
 
@@ -68,6 +83,7 @@ public class ConfirmationWindow : EditorWindow
     private UnityAction _confirmationAction;
     private UnityAction _declineAction;
     private string _text;
+    private bool _performedAction = false;
 
     public static ConfirmationWindow ShowWindow(string textToShow, UnityAction confirmationAction, UnityAction declineAction)
     {
@@ -82,19 +98,27 @@ public class ConfirmationWindow : EditorWindow
 
     void OnGUI()
     {
-        EditorGUILayout.TextArea(_text);
+        EditorGUILayout.LabelField(_text);
 
         EditorGUILayout.BeginHorizontal();
         if (GUILayout.Button("Okay"))
         {
             _confirmationAction?.Invoke();
+            _performedAction = true;
             this.Close();
         }
         if (GUILayout.Button("Cancel"))
         {
             _declineAction?.Invoke();
+            _performedAction = true;
             this.Close();
         }
         EditorGUILayout.EndHorizontal();
+    }
+
+    private void OnDestroy()
+    {
+        if (!_performedAction)
+            _declineAction?.Invoke();
     }
 }
