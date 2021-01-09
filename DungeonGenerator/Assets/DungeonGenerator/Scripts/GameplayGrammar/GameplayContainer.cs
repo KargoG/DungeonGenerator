@@ -53,4 +53,15 @@ public class GameplayContainer : ScriptableObject
 
         return false;
     }
+
+    public Gameplay GetRandomPlacableGameplay()
+    {
+        Gameplay toReturn = null;
+        do
+        {
+            toReturn = _definedGameplay[Random.Range(0, _definedGameplay.Count)];
+        } while (!toReturn.RandomPlacable);
+
+        return toReturn;
+    }
 }

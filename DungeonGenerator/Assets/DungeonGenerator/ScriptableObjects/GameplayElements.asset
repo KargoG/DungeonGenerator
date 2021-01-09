@@ -12,3 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dd0ff8a4773ddb4a8c86d8a21be6213, type: 3}
   m_Name: GameplayElements
   m_EditorClassIdentifier: 
+  _actionContainer: []
+  _entityContainer: []
+  _abilityContainer: []
+  _consumableContainer: []

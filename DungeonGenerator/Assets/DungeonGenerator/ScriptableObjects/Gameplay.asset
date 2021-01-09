@@ -12,3 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98912204a71cb6b4c8bedfa0cd10a6be, type: 3}
   m_Name: Gameplay
   m_EditorClassIdentifier: 
+  _definedGameplay: []
