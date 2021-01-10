@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "new Graph Settings", menuName = "DungeonGenerator/GraphSettings")]
 public class GameplayGraphSettings : ScriptableObject
 {
     [SerializeField] private List<Gameplay> _startGameplay = new List<Gameplay>();

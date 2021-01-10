@@ -142,7 +142,8 @@ public class GameplayCreator : EditorWindow
                 _selectedAbilityIndex > 0 ? _abilities[_selectedAbilityIndex - 1] as Ability : null,
                 _selectedConsumableIndex > 0 ? _consumables[_selectedConsumableIndex - 1] as Consumable : null);
 
-            DataAccess.GetGameplayContainer().AddGameplay(createdGameplay);
+            DataAccess.CreateGameplay(createdGameplay);
+            //DataAccess.GetGameplayContainer().AddGameplay(createdGameplay);
 
             _window.Close();
         }

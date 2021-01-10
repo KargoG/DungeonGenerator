@@ -45,6 +45,20 @@ public class DataAccess : ScriptableObject
         string assetPath = AssetDatabase.GUIDToAssetPath(guid);
         return AssetDatabase.LoadAssetAtPath<GameplayGraph>(assetPath);
     }
+
+    public static void CreateGameplay(Gameplay createdGameplay)
+    {
+        AssetDatabase.CreateAsset(createdGameplay, "Assets/DungeonGenerator/ScriptableObjects/Gameplay/" + createdGameplay.ToString() + ".asset");
+
+        GetGameplayContainer().AddGameplay(createdGameplay);
+    }
+
+    public static void DeleteGameplay(Gameplay gameplayToDelete)
+    {
+        GetGameplayContainer().RemoveGameplay(gameplayToDelete);
+        AssetDatabase.DeleteAsset("Assets/DungeonGenerator/ScriptableObjects/Gameplay/" + gameplayToDelete.ToString() + ".asset");
+    }
+
     #endregion
 
     #region AccessData
@@ -96,5 +110,4 @@ public class DataAccess : ScriptableObject
     }
 
     #endregion
-
 }

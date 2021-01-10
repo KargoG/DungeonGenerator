@@ -20,7 +20,9 @@ public class GameplayGraphManager : ScriptableObject
         }
 
         int stillNeededNodes = Random.Range(minStillNeededNodes, maxStillNeededNodes); // Calculate how many random nodes need to be added
-        List<Gameplay> mustHaveNodes = settings.MustIncludeGameplay;
+        Gameplay[] mustHaveNodesArray = new Gameplay[settings.MustIncludeGameplay.Count];
+        settings.MustIncludeGameplay.CopyTo(mustHaveNodesArray);
+        List<Gameplay> mustHaveNodes = new List<Gameplay>(mustHaveNodesArray);
 
         while (stillNeededNodes + mustHaveNodes.Count > 0) //  Add still wanted gameplay in random order
         {

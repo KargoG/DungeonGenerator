@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27245150089e53549bd7f309b8530afc, type: 3}
+  m_Name: FirstLevelSettings
+  m_EditorClassIdentifier: 
+  _startGameplay:
+  - {fileID: 11400000, guid: a30af7bbca8fa5e48a3b847af907975b, type: 2}
+  _endGameplay:
+  - {fileID: 11400000, guid: 731e5d05bfdfe1548b2b93166e62d557, type: 2}
+  - {fileID: 11400000, guid: e70a1919ad0698c4f9af9887d58abe2f, type: 2}
+  _mustIncludeGameplay:
+  - {fileID: 11400000, guid: bfe578706749e8f44bec6ac327f07133, type: 2}
+  - {fileID: 11400000, guid: bfe578706749e8f44bec6ac327f07133, type: 2}
+  - {fileID: 11400000, guid: bfe578706749e8f44bec6ac327f07133, type: 2}
+  _minStartGraphLength: 5
+  _maxStartGraphLength: 10

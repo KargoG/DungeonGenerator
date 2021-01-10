@@ -25,6 +25,8 @@ public class GameplayGraphWindow : EditorWindow
     private List<GameplayGraph> _graphs = new List<GameplayGraph>();
     //private List<GameplayRepresentation> _graphNodes = new List<GameplayRepresentation>();
     private List<string> _graphNames = new List<string>();
+    private GameplayGraphSettings _settings = null;
+    private string _newGraphName = "";
 
     [MenuItem("Window/DungeonCreator/GameplayGraphEditor")]
     public static void ShowWindow()
@@ -33,6 +35,11 @@ public class GameplayGraphWindow : EditorWindow
     }
 
     private void OnFocus()
+    {
+        ReloadGraphData();
+    }
+
+    void ReloadGraphData()
     {
         _graphs = DataAccess.GetGameplayGraphs();
         _graphNames = new List<string>();
@@ -47,14 +54,17 @@ public class GameplayGraphWindow : EditorWindow
     private void OnGUI()
     {
         _shownGraph = EditorGUILayout.Popup(_shownGraph, _graphNames.ToArray());
+        _newGraphName = EditorGUILayout.TextField("New Graph name", _newGraphName);
+        _settings = EditorGUILayout.ObjectField(_settings, typeof(GameplayGraphSettings), false) as GameplayGraphSettings;
 
-        ShowGraphEditing();
+        HandleEvents(Event.current);
+
+        if (_graphs.Count > 0)
+            ShowGraphEditing();
     }
 
     private void ShowGraphEditing()
     {
-        HandleEvents(Event.current);
-
         EditorGUILayout.Space();
 
         Vector2 lastPos = GUILayoutUtility.GetLastRect().position;
@@ -103,7 +113,20 @@ public class GameplayGraphWindow : EditorWindow
 
     private void CreateStartGraph()
     {
-        GameplayGraphManager.CreateStartGraph("aaaa", new GameplayGraphSettings()); // TODO make settings changable
+        if (_newGraphName.Length <= 0)
+        {
+            ErrorWindow.ShowWindow("You can not create a graph without a name", null);
+            return;
+        }
+
+        if (_graphNames.Contains(_newGraphName))
+        {
+            ErrorWindow.ShowWindow("You can not create a graph with an already existing name", null);
+            return;
+        }
+
+        GameplayGraphManager.CreateStartGraph(_newGraphName, _settings ? _settings : new GameplayGraphSettings());
+        ReloadGraphData();
     }
 
     //private string _graphName = "";

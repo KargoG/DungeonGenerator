@@ -53,7 +53,9 @@ public class GrammarEditor : EditorWindow
         // Deleting all that needs to go
         foreach (Gameplay gameplay in gameplayToDelete)
         {
-            DataAccess.GetGameplayContainer().RemoveGameplay(gameplay);
+            //DataAccess.GetGameplayContainer().RemoveGameplay(gameplay);
+            DataAccess.DeleteGameplay(gameplay);
+
         }
         
 
