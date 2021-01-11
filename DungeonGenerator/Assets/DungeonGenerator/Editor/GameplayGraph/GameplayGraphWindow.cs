@@ -76,6 +76,7 @@ public class GameplayGraphWindow : EditorWindow
 
 
             toDraw.Position = new Vector2(0, i * (50 + 20));
+            toDraw.DrawConnections(new Vector2(150, 50));
             toDraw.DrawNode(new Vector2(150, 50));
         }
 

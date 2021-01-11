@@ -15,11 +15,11 @@ MonoBehaviour:
   _startGameplay:
   - {fileID: 11400000, guid: a30af7bbca8fa5e48a3b847af907975b, type: 2}
   _endGameplay:
-  - {fileID: 11400000, guid: 731e5d05bfdfe1548b2b93166e62d557, type: 2}
+  - {fileID: 11400000, guid: 5a82be3e28dbe43499327e43cc59fe96, type: 2}
   - {fileID: 11400000, guid: e70a1919ad0698c4f9af9887d58abe2f, type: 2}
   _mustIncludeGameplay:
+  - {fileID: 11400000, guid: 6c6e491475968114f9e5cf9d482bf5b3, type: 2}
   - {fileID: 11400000, guid: bfe578706749e8f44bec6ac327f07133, type: 2}
-  - {fileID: 11400000, guid: bfe578706749e8f44bec6ac327f07133, type: 2}
-  - {fileID: 11400000, guid: bfe578706749e8f44bec6ac327f07133, type: 2}
+  - {fileID: 11400000, guid: 03d7a2da20402d54795297ba866fb54d, type: 2}
   _minStartGraphLength: 5
   _maxStartGraphLength: 10

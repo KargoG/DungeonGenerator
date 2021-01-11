@@ -46,6 +46,12 @@ public class GameplayGraphManager : ScriptableObject
             startGraph.AddGameplay(gameplay);
         }
 
+        for (int i = 0; i < startGraph.GameplayInGraph.Count; i++)
+        {
+            if(i < startGraph.GameplayInGraph.Count - 1)
+                startGraph.GameplayInGraph[i].NextGameplay.Add(startGraph.GameplayInGraph[i+1]);
+        }
+
         return startGraph;
     }
 }

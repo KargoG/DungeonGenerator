@@ -51,8 +51,6 @@ public class GameplayElementEditor : EditorWindow
         {
             ShowCreationElements();
         }
-
-        AssetDatabase.SaveAssets();
     }
 
     #region Creation
@@ -106,16 +104,16 @@ public class GameplayElementEditor : EditorWindow
             switch (_currentlyEditedType)
             {
                 case GameplayElementTypes.Action:
-                    DataAccess.GetGameplayElementContainer().AddElement(new Action(_newEntityName), GameplayElementTypes.Action);
+                    DataAccess.CreateAction(new Action(_newEntityName));
                     break;
                 case GameplayElementTypes.Entity:
-                    DataAccess.GetGameplayElementContainer().AddElement(new Entity(_newEntityName), GameplayElementTypes.Entity);
+                    DataAccess.CreateEntity(new Entity(_newEntityName));
                     break;
                 case GameplayElementTypes.Ability:
-                    DataAccess.GetGameplayElementContainer().AddElement(new Ability(_newEntityName), GameplayElementTypes.Ability);
+                    DataAccess.CreateAbility(new Ability(_newEntityName));
                     break;
                 case GameplayElementTypes.Consumable:
-                    DataAccess.GetGameplayElementContainer().AddElement(new Consumable(_newEntityName), GameplayElementTypes.Consumable);
+                    DataAccess.CreateConsumable(new Consumable(_newEntityName));
                     break;
             }
 

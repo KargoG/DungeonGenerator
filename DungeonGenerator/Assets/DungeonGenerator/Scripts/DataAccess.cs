@@ -32,6 +32,29 @@ public class DataAccess : ScriptableObject
         _gameplayElements = AssetDatabase.LoadAssetAtPath<GameplayElementContainer>(assetPath);
     }
 
+    public static void CreateAction(Action action)
+    {
+        AssetDatabase.CreateAsset(action, "Assets/DungeonGenerator/ScriptableObjects/GameplayElements/Actions/" + action.Name + ".asset");
+        _gameplayElements.AddElement(action, GameplayElementTypes.Action);
+    }
+    public static void CreateEntity(Entity entity)
+    {
+        AssetDatabase.CreateAsset(entity, "Assets/DungeonGenerator/ScriptableObjects/GameplayElements/Entities/" + entity.Name + ".asset");
+        _gameplayElements.AddElement(entity, GameplayElementTypes.Entity);
+    }
+
+    public static void CreateAbility(Ability ability)
+    {
+        AssetDatabase.CreateAsset(ability, "Assets/DungeonGenerator/ScriptableObjects/GameplayElements/Abilities/" + ability.Name + ".asset");
+        _gameplayElements.AddElement(ability, GameplayElementTypes.Ability);
+    }
+
+    public static void CreateConsumable(Consumable consumable)
+    {
+        AssetDatabase.CreateAsset(consumable, "Assets/DungeonGenerator/ScriptableObjects/GameplayElements/Consumables/" + consumable.Name + ".asset");
+        _gameplayElements.AddElement(consumable, GameplayElementTypes.Consumable);
+    }
+
     public static GameplayGraph CreateGameplayGraph(string name)
     {
         GameplayGraph newGraph = GameplayGraph.CreateGraph(name);
@@ -57,6 +80,20 @@ public class DataAccess : ScriptableObject
     {
         GetGameplayContainer().RemoveGameplay(gameplayToDelete);
         AssetDatabase.DeleteAsset("Assets/DungeonGenerator/ScriptableObjects/Gameplay/" + gameplayToDelete.ToString() + ".asset");
+    }
+
+    public static RoomGraph CreateRoomGraph(string name, GameplayGraph graphToTransform)
+    {
+        RoomGraph newGraph = RoomGraph.CreateStartingGraph(name, graphToTransform);
+        AssetDatabase.CreateAsset(newGraph, "Assets/DungeonGenerator/ScriptableObjects/RoomGraphs/" + name + ".asset");
+
+        return newGraph;
+    }
+
+    private static RoomGraph LoadRoomGraph(string guid)
+    {
+        string assetPath = AssetDatabase.GUIDToAssetPath(guid);
+        return AssetDatabase.LoadAssetAtPath<RoomGraph>(assetPath);
     }
 
     #endregion
@@ -109,5 +146,20 @@ public class DataAccess : ScriptableObject
         return graphs;
     }
 
+    public static List<RoomGraph> GetRoomGraphs()
+    {
+        List<RoomGraph> graphs = new List<RoomGraph>();
+
+        string[] assetsGUID = AssetDatabase.FindAssets("t:RoomGraph");
+
+        foreach (string guid in assetsGUID)
+        {
+            graphs.Add(LoadRoomGraph(guid));
+        }
+
+        return graphs;
+    }
+
     #endregion
+
 }
