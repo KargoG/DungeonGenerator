@@ -183,35 +183,14 @@ public class GameplayElementEditor : EditorWindow
         }
     }
 
-    private bool _shouldShowActions = false;
     void ShowEntityEditing()
     {
-        //EditorGUILayout.Space();
+        Entity shownEntity = DataAccess.GetGameplayElementContainer().GetElement(_selectedElement, _currentlyEditedType) as Entity;
 
-        //_shouldShowActions = EditorGUILayout.Foldout(_shouldShowActions, "Actions");
+        if (shownEntity == null)
+            return;
 
-        //if (_shouldShowActions)
-        //{
-        //    Entity toEdit = DataAccess.GetGameplayElementContainer().GetElement(_selectedElement, GameplayElementTypes.Entity) as Entity;
-
-        //    List<GameplayElement> actions = DataAccess.GetGameplayElementContainer().GetAllElements(GameplayElementTypes.Action);
-
-        //    foreach (Action action in actions)
-        //    {
-        //        bool containsAction = toEdit.ContainsAction(action);
-        //        bool shouldContain = EditorGUILayout.Toggle(action.Name, containsAction);
-        //        if (containsAction && !shouldContain)
-        //        {
-        //            toEdit.RemoveActionThatCanPerformOnThis(action);
-        //            action.RemoveEntityToPerformOn(toEdit);
-        //        }
-        //        else if (!containsAction && shouldContain)
-        //        {
-        //            toEdit.AddActionThatCanPerformOnThis(action);
-        //            action.AddEntityToPerformOn(toEdit);
-        //        }
-        //    }
-        //}
+        shownEntity.Representation = EditorGUILayout.ObjectField(shownEntity.Representation, typeof(GameObject), false) as GameObject;
     }
     void ShowAbilityEditing()
     {

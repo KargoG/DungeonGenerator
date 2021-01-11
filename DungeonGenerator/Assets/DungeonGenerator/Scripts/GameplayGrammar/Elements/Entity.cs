@@ -10,6 +10,13 @@ public class Entity : GameplayElement
     {
     }
 
+    private GameObject _representation = null;
+    public GameObject Representation
+    {
+        get { return _representation; }
+        set { _representation = value; }
+    }
+
     //public string[] GetActionNames()
     //{
     //    string[] names = new string[_actionsThatCanBePerformedOnThis.Count];

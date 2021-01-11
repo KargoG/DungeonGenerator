@@ -12,7 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dd0ff8a4773ddb4a8c86d8a21be6213, type: 3}
   m_Name: GameplayElements
   m_EditorClassIdentifier: 
-  _actionContainer: []
-  _entityContainer: []
+  _actionContainer:
+  - {fileID: 11400000, guid: 919e836b278c5ac46b7d3f63dd1c90e1, type: 2}
+  - {fileID: 11400000, guid: 2896531fe3a270e44a90f4083c74b6cd, type: 2}
+  - {fileID: 11400000, guid: eadc54c55507b574da76bc62e993a44d, type: 2}
+  - {fileID: 11400000, guid: 74bafeb6d9afb6542851b526c71b8077, type: 2}
+  - {fileID: 11400000, guid: a6386f499767b324aaf0a07cb9a67705, type: 2}
+  - {fileID: 11400000, guid: cbaa60bb1adceb04baae1b039a316147, type: 2}
+  _entityContainer:
+  - {fileID: 11400000, guid: 4f7beed71e011c848abf709a2b48f2dd, type: 2}
+  - {fileID: 11400000, guid: d70f45fb3cc44a0429e9071f672bbb22, type: 2}
+  - {fileID: 11400000, guid: 5bce7de1f3c939a408e9b94335aea770, type: 2}
+  - {fileID: 11400000, guid: 4a54afb1d8a94024ab632bd739766c1a, type: 2}
+  - {fileID: 11400000, guid: 73dee846130520c479d32f264d2ff3ba, type: 2}
+  - {fileID: 11400000, guid: ce495699612fabf48a3738c01d371e36, type: 2}
+  - {fileID: 11400000, guid: 0bfab52bc50e91445a2a73592b86b433, type: 2}
+  - {fileID: 11400000, guid: d16eb8f8c4c79d744917be8320de0f8c, type: 2}
+  - {fileID: 11400000, guid: b283b031afd716141bc8cf9308b12d46, type: 2}
   _abilityContainer: []
-  _consumableContainer: []
+  _consumableContainer:
+  - {fileID: 11400000, guid: e3719dcb696ef50419b5fa317397a319, type: 2}

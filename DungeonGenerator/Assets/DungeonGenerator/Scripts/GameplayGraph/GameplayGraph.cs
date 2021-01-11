@@ -68,6 +68,11 @@ public class GameplayRepresentation : ScriptableObject
     {
         _nextGameplay = nextGameplay;
     }
+
+    public void SpawnGameplay(GameObject roomRoot) // TODO change so gameplay has more information (like geometry and shit)
+    {
+        Instantiate(_gameplay.Entity.Representation, roomRoot.transform.position, Quaternion.identity, roomRoot.transform);
+    }
 }
 
 [Serializable]

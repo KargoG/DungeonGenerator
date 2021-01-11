@@ -145,7 +145,11 @@ public class RoomGraphWindow : EditorWindow
 
             Vector3 roomPosition = new Vector3(dungeonRoom.Position.x, 0, dungeonRoom.Position.y) / 3; // TODO this value is hardcoded
 
-            Instantiate(_roomPrefab, roomPosition, Quaternion.identity, dungeonRoot.transform);
+            GameObject room = Instantiate(_roomPrefab, roomPosition, Quaternion.identity, dungeonRoot.transform);
+            foreach (GameplayRepresentation gameplayInRoom in dungeonRoom.GameplayInRoom)
+            {
+                gameplayInRoom.SpawnGameplay(room);
+            }
         }
     }
 }

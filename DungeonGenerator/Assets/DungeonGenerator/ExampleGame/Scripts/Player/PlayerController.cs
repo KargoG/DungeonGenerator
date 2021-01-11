@@ -11,7 +11,9 @@ namespace DungeonGenerator.ExampleGame
         private CharacterController _characterController;
         [SerializeField] private float _movementSpeed = 10;
         [SerializeField] private GameObject _attackPre = null;
-        [SerializeField] private Vector2 _interactionBoxHalfExtends = new Vector2();
+        [SerializeField] private Vector3 _interactionBoxHalfExtends = new Vector3(0.25f, 0.25f, 0.5f);
+
+        private int _keys;
 
         // Start is called before the first frame update
         void Awake()
@@ -24,6 +26,12 @@ namespace DungeonGenerator.ExampleGame
         {
             HandleMovement();
             HandleInput();
+        }
+
+        void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireCube(transform.position + transform.forward * 0.5f + transform.up * 0.5f, _interactionBoxHalfExtends * 2);
         }
 
         private void HandleInput()
@@ -47,22 +55,34 @@ namespace DungeonGenerator.ExampleGame
 
         private void Attack()
         {
-            Instantiate(_attackPre, transform.position, transform.rotation);
+            Instantiate(_attackPre, transform.position + transform.up, transform.rotation).GetComponent<BaseAttack>().Attacker = gameObject;
         }
+        
         private void Interact()
         {
-            Collider[] possibleInteractions = Physics.OverlapBox(transform.position + transform.forward * 0.5f, _interactionBoxHalfExtends, transform.rotation);
+            Collider[] possibleInteractions = Physics.OverlapBox(transform.position + transform.forward * 0.5f + transform.up * 0.5f, _interactionBoxHalfExtends, transform.rotation);
 
             foreach (Collider possibleInteraction in possibleInteractions)
             {
-                //IInteractable interactable = possibleInteraction.GetComponent<IInteractable>();
+                Key key = possibleInteraction.GetComponent<Key>();
 
-                //if (!interactable)
-                //    continue;
+                if (key)
+                {
+                    key.Pickup();
+                    continue;
+                }
 
-                //interactable.Interact();
             }
         }
 
+        public void AddKey()
+        {
+            _keys++;
+        }
+
+        public void GetAttacked()
+        {
+            print("Take Damage");
+        }
     }
 }
