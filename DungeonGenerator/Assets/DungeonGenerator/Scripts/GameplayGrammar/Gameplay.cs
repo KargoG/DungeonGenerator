@@ -2,63 +2,84 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum GameplayElementTypes
+namespace DungeonGenerator
 {
-    Action,
-    Entity,
-    Ability,
-    Consumable
-}
-
-public class Gameplay : ScriptableObject
-{
-    private Action _action;
-    public Action Action { get{ return _action; } }
-
-    private Entity _entity;
-    public Entity Entity { get { return _entity; } }
-
-    private Ability _ability;
-    public Ability Ability { get { return _ability; } }
-
-    private Consumable _consumable;
-    public Consumable Consumable { get { return _consumable; } }
-
-    private bool _randomPlacable = true; // TODO add UI to change this value
-    public bool RandomPlacable
+    public enum GameplayElementTypes
     {
-        get { return _randomPlacable; }
+        Action,
+        Entity,
+        Ability,
+        Consumable
     }
 
-    public static Gameplay CreateGameplay(Action action, Entity entity, Ability ability, Consumable consumable)
+    public class Gameplay : ScriptableObject
     {
-        Gameplay createdGameplay = CreateInstance<Gameplay>();
-        createdGameplay._action = action;
-        createdGameplay._entity = entity;
-        createdGameplay._ability = ability;
-        createdGameplay._consumable = consumable;
+        private Action _action;
 
-        return createdGameplay;
-    }
-
-    public string ToString()
-    {
-        string asString = Action.Name + " " + Entity.Name;
-
-        if (Ability)
+        public Action Action
         {
-            asString += " " + Ability.Name;
-        }
-        if (Consumable)
-        {
-            asString += " " + Consumable;
+            get { return _action; }
         }
 
-        return asString;
-    }
+        private Entity _entity;
 
-    private Gameplay()
-    {
+        public Entity Entity
+        {
+            get { return _entity; }
+        }
 
+        private Ability _ability;
+
+        public Ability Ability
+        {
+            get { return _ability; }
+        }
+
+        private Consumable _consumable;
+
+        public Consumable Consumable
+        {
+            get { return _consumable; }
+        }
+
+        private bool _randomPlacable = true; // TODO add UI to change this value
+
+        public bool RandomPlacable
+        {
+            get { return _randomPlacable; }
+        }
+
+        public static Gameplay CreateGameplay(Action action, Entity entity, Ability ability, Consumable consumable)
+        {
+            Gameplay createdGameplay = CreateInstance<Gameplay>();
+            createdGameplay._action = action;
+            createdGameplay._entity = entity;
+            createdGameplay._ability = ability;
+            createdGameplay._consumable = consumable;
+
+            createdGameplay.SetName();
+
+            return createdGameplay;
+        }
+
+        public void SetName()
+        {
+            name = Action.name + " " + Entity.name;
+
+            if (Ability)
+            {
+                name += " " + Ability.name;
+            }
+
+            if (Consumable)
+            {
+                name += " " + Consumable;
+            }
+        }
+
+        private Gameplay()
+        {
+
+        }
     }
 }

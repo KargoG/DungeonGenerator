@@ -3,10 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
-public class Ability : GameplayElement
+
+namespace DungeonGenerator
 {
-    public Ability(string name) : base(name)
+    [Serializable]
+    public class Ability : GameplayElement
     {
+        public static Ability Create(string newAbilityName)
+        {
+            Ability newAbility = CreateInstance<Ability>();
+            newAbility.name = newAbilityName;
+
+            return newAbility;
+        }
     }
 }

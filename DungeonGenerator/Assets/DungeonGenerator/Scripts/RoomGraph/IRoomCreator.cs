@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using DungeonGenerator;
 using UnityEngine;
 
 public interface IRoomCreator

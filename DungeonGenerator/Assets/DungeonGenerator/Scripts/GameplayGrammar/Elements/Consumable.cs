@@ -3,10 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
-public class Consumable : GameplayElement
+namespace DungeonGenerator
 {
-    public Consumable(string name) : base(name)
+    [Serializable]
+    public class Consumable : GameplayElement
     {
+        public static Consumable Create(string newConsumableName)
+        {
+            Consumable newConsumable = CreateInstance<Consumable>();
+            newConsumable.name = newConsumableName;
+
+            return newConsumable;
+        }
     }
 }

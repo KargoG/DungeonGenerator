@@ -3,14 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
-public abstract class GameplayElement : ScriptableObject
+namespace DungeonGenerator
 {
-    [SerializeField] private string _name;
-    public string Name { get{ return _name; } }
-
-    public GameplayElement(string name)
+    [Serializable]
+    public abstract class GameplayElement : ScriptableObject
     {
-        _name = name;
     }
 }
