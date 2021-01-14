@@ -14,6 +14,18 @@ namespace DungeonGenerator
         [SerializeField] private List<GameplayElement> _abilityContainer = new List<GameplayElement>();
         [SerializeField] private List<GameplayElement> _consumableContainer = new List<GameplayElement>();
 
+        void OnEnable()
+        {
+            if(_actionContainer == null)
+                _actionContainer = new List<GameplayElement>();
+            if (_entityContainer == null)
+                _entityContainer = new List<GameplayElement>();
+            if (_abilityContainer == null)
+                _abilityContainer = new List<GameplayElement>();
+            if (_consumableContainer == null)
+                _consumableContainer = new List<GameplayElement>();
+        }
+
         #region usingTemplate
 
         //public void AddElement<T>(T newElement) where T : GameplayElement
@@ -47,7 +59,7 @@ namespace DungeonGenerator
         //public List<T> GetAllElements<T>() where T : GameplayElement
         //{
         //    return gameplayElementContainer[GetContainer<T>()] as List<T>;
-        //}g
+        //}
         private int GetContainer<T>()
         {
             GameplayElementTypes gt;

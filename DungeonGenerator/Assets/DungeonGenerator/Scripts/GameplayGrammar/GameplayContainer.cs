@@ -1,13 +1,22 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using DungeonGenerator;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace DungeonGenerator
 {
+    [Serializable]
     public class GameplayContainer : ScriptableObject
     {
-        [SerializeField] private List<Gameplay> _definedGameplay = new List<Gameplay>();
+        [SerializeField] private List<Gameplay> _definedGameplay;
+
+        void OnEnable()
+        {
+            if (_definedGameplay == null)
+                _definedGameplay = new List<Gameplay>();
+        }
 
         public void AddGameplay(Gameplay toAdd)
         {

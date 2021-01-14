@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,38 +13,34 @@ namespace DungeonGenerator
         Consumable
     }
 
+    [Serializable]
     public class Gameplay : ScriptableObject
     {
-        private Action _action;
-
+        [SerializeField] private Action _action;
         public Action Action
         {
             get { return _action; }
         }
 
-        private Entity _entity;
-
+        [SerializeField] private Entity _entity;
         public Entity Entity
         {
             get { return _entity; }
         }
 
-        private Ability _ability;
-
+        [SerializeField] private Ability _ability;
         public Ability Ability
         {
             get { return _ability; }
         }
 
-        private Consumable _consumable;
-
+        [SerializeField] private Consumable _consumable;
         public Consumable Consumable
         {
             get { return _consumable; }
         }
 
-        private bool _randomPlacable = true; // TODO add UI to change this value
-
+        [SerializeField] private bool _randomPlacable = true; // TODO add UI to change this value
         public bool RandomPlacable
         {
             get { return _randomPlacable; }
