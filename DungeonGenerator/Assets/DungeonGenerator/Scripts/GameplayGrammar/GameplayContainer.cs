@@ -67,5 +67,17 @@ namespace DungeonGenerator
 
             return toReturn;
         }
+
+        public string[] GetGameplayNames()
+        {
+            string[] names = new string[_definedGameplay.Count];
+
+            for (int i = 0; i < _definedGameplay.Count; i++)
+            {
+                names[i] = _definedGameplay[i].name;
+            }
+
+            return names;
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 namespace DungeonGenerator.Editor
@@ -44,10 +45,22 @@ namespace DungeonGenerator.Editor
             _settings =
                 EditorGUILayout.ObjectField(_settings, typeof(GameplayGraphSettings), false) as GameplayGraphSettings;
 
-            HandleEvents(Event.current);
+            Event e = Event.current;
+            Vector2 originalMousePos = e.mousePosition;
+            e.mousePosition -= new Vector2(0, GUILayoutUtility.GetLastRect().y + GUILayoutUtility.GetLastRect().height);
+            HandleEvents(e);
+            e.mousePosition = originalMousePos;
 
             if (_graphs.Count > 0)
+            {
+                if (GUILayout.Button("RunReplacementPass"))
+                {
+                    WarningWindow.ShowWindow("This isn't finished yet!", null);
+                    //RunPass();
+                }
+
                 ShowGraphEditing();
+            }
         }
 
         private void ShowGraphEditing()
@@ -62,23 +75,26 @@ namespace DungeonGenerator.Editor
             {
                 GameplayRepresentation toDraw = _graphs[_shownGraph].GameplayInGraph[i];
 
-                toDraw.DrawConnections(new Vector2(150, 50));
-                toDraw.DrawNode(new Vector2(150, 50));
+                toDraw.DrawConnections(new Vector2());
+                toDraw.DrawNode(new Vector2());
             }
 
 
             GUI.EndGroup();
-            //foreach (GameplayRepresentation gameplay in _graphs[_shownGraph].GameplayInGraph)
-            //{
-            //    gameplay.Position 
-            //    gameplay.DrawNode(new Vector2(150, 50));
-            //}
-
-            Repaint();
         }
 
         void HandleEvents(Event e)
         {
+            bool repaintNeeded = false;
+            foreach (GameplayRepresentation gameplayNode in _graphs[_shownGraph].GameplayInGraph)
+            {
+                if (gameplayNode.HandleInput(e))
+                    repaintNeeded = true;
+            }
+
+            if (repaintNeeded)
+                Repaint();
+
             switch (e.type)
             {
                 case EventType.MouseDown:
@@ -121,6 +137,23 @@ namespace DungeonGenerator.Editor
 
             GameplayGraphManager.CreateStartGraph(_newGraphName, _settings ? _settings : new GameplayGraphSettings());
             ReloadGraphData();
+        }
+
+
+        // TODO finish this shit
+        void RunPass()
+        {
+            GameplayGraph graphToChange = _graphs[_shownGraph];
+
+            List<GameplayGraph> replacableGraphs = DataAccess.GetGameplaySubgraphConnections().GetReplacableGraphs();
+
+            foreach (GameplayGraph replacableGraph in replacableGraphs)
+            {
+                foreach (GameplayGraph replacement in DataAccess.GetGameplaySubgraphConnections().GetConnections(replacableGraph))
+                {
+                    graphToChange.InsertSubgraph(replacableGraph, replacement);
+                }
+            }
         }
     }
 }

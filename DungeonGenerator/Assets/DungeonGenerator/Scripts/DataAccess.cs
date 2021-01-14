@@ -9,6 +9,7 @@ namespace DungeonGenerator.Editor
     {
         private static GameplayElementContainer _gameplayElements;
         private static GameplayContainer _gameplay;
+        private static SubgraphConnections _connections;
 
         #region LoadingData
 
@@ -18,12 +19,6 @@ namespace DungeonGenerator.Editor
             AssetDatabase.CreateAsset(_gameplay, "Assets/DungeonGenerator/ScriptableObjects/Gameplay.asset");
         }
 
-        private static void LoadGameplayContainer(string guid)
-        {
-            string assetPath = AssetDatabase.GUIDToAssetPath(guid);
-            _gameplay = AssetDatabase.LoadAssetAtPath<GameplayContainer>(assetPath);
-        }
-
         private static void CreateGameplayElementContainer()
         {
             _gameplayElements = ScriptableObject.CreateInstance<GameplayElementContainer>();
@@ -31,10 +26,11 @@ namespace DungeonGenerator.Editor
                 "Assets/DungeonGenerator/ScriptableObjects/GameplayElements.asset");
         }
 
-        private static void LoadGameplayElementContainer(string guid)
+        private static void CreateGameplaySubgraphConnections()
         {
-            string assetPath = AssetDatabase.GUIDToAssetPath(guid);
-            _gameplayElements = AssetDatabase.LoadAssetAtPath<GameplayElementContainer>(assetPath);
+            _connections = ScriptableObject.CreateInstance<SubgraphConnections>();
+            AssetDatabase.CreateAsset(_connections,
+                "Assets/DungeonGenerator/ScriptableObjects/GameplayGraphs/SubGraphs/Connections/SubgraphConnections.asset");
         }
 
         public static void CreateAction(Action action)
@@ -70,6 +66,15 @@ namespace DungeonGenerator.Editor
             GameplayGraph newGraph = GameplayGraph.CreateGraph(name);
             AssetDatabase.CreateAsset(newGraph,
                 "Assets/DungeonGenerator/ScriptableObjects/GameplayGraphs/LevelGraphs/" + name + ".asset");
+
+            return newGraph;
+        }
+
+        public static GameplayGraph CreateGameplaySubGraph(string name)
+        {
+            GameplayGraph newGraph = GameplayGraph.CreateGraph(name);
+            AssetDatabase.CreateAsset(newGraph,
+                "Assets/DungeonGenerator/ScriptableObjects/GameplayGraphs/SubGraphs/" + name + ".asset");
 
             return newGraph;
         }
@@ -150,12 +155,41 @@ namespace DungeonGenerator.Editor
             return _gameplayElements;
         }
 
+        public static SubgraphConnections GetGameplaySubgraphConnections()
+        {
+            if (_connections == null)
+            {
+
+                _connections = AssetDatabase.LoadAssetAtPath<SubgraphConnections>(
+                    "Assets/DungeonGenerator/ScriptableObjects/GameplayGraphs/SubGraphs/Connections/SubgraphConnections.asset");
+
+                if (!_connections)
+                    CreateGameplaySubgraphConnections();
+            }
+
+            return _connections;
+        }
+
         public static List<GameplayGraph> GetGameplayGraphs()
         {
             List<GameplayGraph> graphs = new List<GameplayGraph>();
 
-            string[] assetsGUID = AssetDatabase.FindAssets("t:GameplayGraph");
+            string[] assetsGUID = AssetDatabase.FindAssets("t:GameplayGraph", new[] { "Assets/DungeonGenerator/ScriptableObjects/GameplayGraphs/LevelGraphs" });
 
+            foreach (string guid in assetsGUID)
+            {
+                graphs.Add(LoadGameplayGraph(guid));
+            }
+
+            return graphs;
+        }
+
+        public static List<GameplayGraph> GetGameplaySubGraphs()
+        {
+            List<GameplayGraph> graphs = new List<GameplayGraph>();
+
+            string[] assetsGUID = AssetDatabase.FindAssets("t:GameplayGraph", new []{ "Assets/DungeonGenerator/ScriptableObjects/GameplayGraphs/SubGraphs" });
+            
             foreach (string guid in assetsGUID)
             {
                 graphs.Add(LoadGameplayGraph(guid));
@@ -177,8 +211,6 @@ namespace DungeonGenerator.Editor
 
             return graphs;
         }
-
         #endregion
-
     }
 }

@@ -8,7 +8,7 @@ namespace DungeonGenerator
     [Serializable]
     public class Entity : GameplayElement
     {
-        private GameObject _representation = null;
+        [SerializeField] private GameObject _representation;
 
         public GameObject Representation
         {
