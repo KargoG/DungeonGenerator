@@ -12,3 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a6aa4e22431d59409a91394701f95a3, type: 3}
   m_Name: Solve Puzzle
   m_EditorClassIdentifier: 
+  _action: {fileID: 11400000, guid: 057ea74a2fbffa84cba6a8bc64b7f4f0, type: 2}
+  _entity: {fileID: 11400000, guid: 58f0f19937db9334391645d953a4ff1f, type: 2}
+  _ability: {fileID: 0}
+  _consumable: {fileID: 0}
+  _randomPlacable: 1

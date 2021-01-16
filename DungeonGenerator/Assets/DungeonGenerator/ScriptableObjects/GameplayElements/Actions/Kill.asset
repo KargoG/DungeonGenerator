@@ -12,5 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67eb486ebf7002b479c7dc61537c9e8f, type: 3}
   m_Name: Kill
   m_EditorClassIdentifier: 
-  _name: Kill
   _entitiesThisCanBePerformedOn: []

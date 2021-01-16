@@ -12,7 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dd0ff8a4773ddb4a8c86d8a21be6213, type: 3}
   m_Name: GameplayElements
   m_EditorClassIdentifier: 
-  _actionContainer: []
-  _entityContainer: []
+  _actionContainer:
+  - {fileID: 11400000, guid: 919e836b278c5ac46b7d3f63dd1c90e1, type: 2}
+  - {fileID: 11400000, guid: 057ea74a2fbffa84cba6a8bc64b7f4f0, type: 2}
+  _entityContainer:
+  - {fileID: 11400000, guid: 73dee846130520c479d32f264d2ff3ba, type: 2}
+  - {fileID: 11400000, guid: 4f7beed71e011c848abf709a2b48f2dd, type: 2}
+  - {fileID: 11400000, guid: 58f0f19937db9334391645d953a4ff1f, type: 2}
   _abilityContainer: []
   _consumableContainer: []

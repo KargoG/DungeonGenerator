@@ -85,11 +85,16 @@ namespace DungeonGenerator.Editor
 
         void HandleEvents(Event e)
         {
+
             bool repaintNeeded = false;
-            foreach (GameplayRepresentation gameplayNode in _graphs[_shownGraph].GameplayInGraph)
+
+            if (_graphs.Count > 0)
             {
-                if (gameplayNode.HandleInput(e))
-                    repaintNeeded = true;
+                foreach (GameplayRepresentation gameplayNode in _graphs[_shownGraph].GameplayInGraph)
+                {
+                    if (gameplayNode.HandleInput(e))
+                        repaintNeeded = true;
+                }
             }
 
             if (repaintNeeded)

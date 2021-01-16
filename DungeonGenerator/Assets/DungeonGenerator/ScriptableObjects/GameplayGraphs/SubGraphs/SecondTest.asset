@@ -9,6 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a6aa4e22431d59409a91394701f95a3, type: 3}
-  m_Name: Unlock LockedDoor Key (Consumable)
+  m_Script: {fileID: 11500000, guid: beec938da62ebbc4b82e8ad45f4bd4e5, type: 3}
+  m_Name: SecondTest
   m_EditorClassIdentifier: 
+  _name: SecondTest
+  _gameplayInGraph: []
+  _startingGameplay: []
+  _endGameplay: []

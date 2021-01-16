@@ -9,6 +9,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a6aa4e22431d59409a91394701f95a3, type: 3}
-  m_Name: Open Chest
+  m_Script: {fileID: 11500000, guid: 3ce499ffc8c8741488970e4240369c3b, type: 3}
+  m_Name: RoomGraphT
   m_EditorClassIdentifier: 
+  _name: RoomGraphT
+  _dungeonGraph:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  _firstRoom: {fileID: 0}

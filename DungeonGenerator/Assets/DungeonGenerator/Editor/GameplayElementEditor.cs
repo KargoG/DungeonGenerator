@@ -209,9 +209,16 @@ namespace DungeonGenerator.Editor
 
             if (shownEntity == null)
                 return;
-
-            shownEntity.Representation =
+            
+            GameObject representation = // TODO this seems to break the serialization IDK why
                 EditorGUILayout.ObjectField(shownEntity.Representation, typeof(GameObject), false) as GameObject;
+
+            if(shownEntity.Representation != representation) // have to do this since unity doesn`t save changes otherwise
+            {
+                shownEntity.Representation = representation;
+                EditorUtility.SetDirty(shownEntity);
+                AssetDatabase.SaveAssets();
+            }
         }
 
         void ShowAbilityEditing()

@@ -12,3 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a6aa4e22431d59409a91394701f95a3, type: 3}
   m_Name: Kill Enemy
   m_EditorClassIdentifier: 
+  _action: {fileID: 11400000, guid: 919e836b278c5ac46b7d3f63dd1c90e1, type: 2}
+  _entity: {fileID: 11400000, guid: 73dee846130520c479d32f264d2ff3ba, type: 2}
+  _ability: {fileID: 0}
+  _consumable: {fileID: 0}
+  _randomPlacable: 1

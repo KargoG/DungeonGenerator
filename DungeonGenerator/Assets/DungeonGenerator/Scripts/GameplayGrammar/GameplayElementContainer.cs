@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using DungeonGenerator;
+using UnityEditor;
 using UnityEngine;
 
 namespace DungeonGenerator
@@ -93,11 +94,13 @@ namespace DungeonGenerator
         {
             List<GameplayElement> list = GetList(elementType);
 
-
             if (!list.Contains(newElement))
             {
                 list.Add(newElement);
             }
+
+            EditorUtility.SetDirty(this);
+            AssetDatabase.SaveAssets();
         }
 
         public GameplayElement GetElement(int elementNumber, GameplayElementTypes elementType)
@@ -119,6 +122,9 @@ namespace DungeonGenerator
             {
                 list.Remove(toDelete);
             }
+
+            EditorUtility.SetDirty(this);
+            AssetDatabase.SaveAssets();
         }
 
         public List<GameplayElement> GetAllElements(GameplayElementTypes elementType)
