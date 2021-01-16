@@ -29,9 +29,7 @@ namespace DungeonGenerator
             int stillNeededNodes =
                 Random.Range(minStillNeededNodes,
                     maxStillNeededNodes); // Calculate how many random nodes need to be added
-            Gameplay[] mustHaveNodesArray = new Gameplay[settings.MustIncludeGameplay.Count];
-            settings.MustIncludeGameplay.CopyTo(mustHaveNodesArray);
-            List<Gameplay> mustHaveNodes = new List<Gameplay>(mustHaveNodesArray);
+            List<Gameplay> mustHaveNodes = new List<Gameplay>(settings.MustIncludeGameplay);
 
             while (stillNeededNodes + mustHaveNodes.Count > 0) //  Add still wanted gameplay in random order
             {

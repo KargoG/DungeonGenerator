@@ -105,6 +105,8 @@ public class SubgraphConnector : EditorWindow
             if (GUILayout.Button("Remove Connection"))
             {
                 connections.RemoveConnection(_allGraphs[_graphOnLeftSide], _allGraphs[_graphOnRightSide]);
+                EditorUtility.SetDirty(this);
+                AssetDatabase.SaveAssets();
             }
         }
         else
@@ -112,6 +114,8 @@ public class SubgraphConnector : EditorWindow
             if (GUILayout.Button("Add Connection"))
             {
                 connections.AddConnection(_allGraphs[_graphOnLeftSide], _allGraphs[_graphOnRightSide]);
+                EditorUtility.SetDirty(this);
+                AssetDatabase.SaveAssets();
             }
         }
 

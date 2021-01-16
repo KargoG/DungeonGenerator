@@ -159,17 +159,16 @@ namespace DungeonGenerator
         }
 
         [SerializeField] private List<GameplayRepresentation> _gameplayInGraph;
-
-        public List<GameplayRepresentation> GameplayInGraph
+        public IReadOnlyList<GameplayRepresentation> GameplayInGraph
         {
-            get { return _gameplayInGraph; }
+            get { return _gameplayInGraph.AsReadOnly(); }
         }
 
         [SerializeField] private List<GameplayRepresentation> _startingGameplay;
-        public List<GameplayRepresentation> StartingGameplay { get{ return _startingGameplay; } set { _startingGameplay = value; } }
+        public IReadOnlyList<GameplayRepresentation> StartingGameplay { get{ return _startingGameplay.AsReadOnly(); } /*set { _startingGameplay = value; }*/ }
 
         [SerializeField] private List<GameplayRepresentation> _endGameplay;
-        public List<GameplayRepresentation> EndGameplay { get{ return _endGameplay; } set { _endGameplay = value; } }
+        public IReadOnlyList<GameplayRepresentation> EndGameplay { get{ return _endGameplay.AsReadOnly(); } /*set { _endGameplay = value; }*/ }
 
 
         void OnEnable()
@@ -284,6 +283,32 @@ namespace DungeonGenerator
             }
 
             return lastGameplay;
+        }
+
+        public void RemoveGameplay(GameplayRepresentation gp)
+        {
+            if (_endGameplay.Contains(gp))
+                _endGameplay.Remove(gp);
+            if (_startingGameplay.Contains(gp))
+                _startingGameplay.Remove(gp);
+            if (_gameplayInGraph.Contains(gp))
+                _gameplayInGraph.Remove(gp);
+        }
+
+        public void ChangeStartingGameplay(GameplayRepresentation gp)
+        {
+            if (_startingGameplay.Contains(gp))
+                _startingGameplay.Remove(gp);
+            else
+                _startingGameplay.Add(gp);
+        }
+
+        public void ChangeEndGameplay(GameplayRepresentation gp)
+        {
+            if (_endGameplay.Contains(gp))
+                _endGameplay.Remove(gp);
+            else
+                _endGameplay.Add(gp);
         }
     }
 }

@@ -9,7 +9,6 @@ namespace DungeonGenerator
     public class DungeonRoom : ScriptableObject
     {
         private List<GameplayRepresentation> _gameplayInRoom = new List<GameplayRepresentation>();
-
         public List<GameplayRepresentation> GameplayInRoom
         {
             get { return _gameplayInRoom; }

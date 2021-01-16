@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using DungeonGenerator;
-using UnityEditor;
 using UnityEngine;
 
 namespace DungeonGenerator
@@ -29,38 +28,6 @@ namespace DungeonGenerator
 
         #region usingTemplate
 
-        //public void AddElement<T>(T newElement) where T : GameplayElement
-        //{
-        //    List<T> list = gameplayElementContainer[GetContainer<T>()] as List<T>;
-
-        //    if (!list.Contains(newElement))
-        //    {
-        //        list.Add(newElement);
-        //    }
-        //}
-        //public T GetElement<T>(int elementNumber) where T : GameplayElement
-        //{
-        //    List<T> list = gameplayElementContainer[GetContainer<T>()] as List<T>;
-
-        //    if (list.Count > elementNumber)
-        //    {
-        //        return list[elementNumber];
-        //    }
-
-        //    return null;
-        //}
-        //public void DeleteElement<T>(T toDelete) where T : GameplayElement
-        //{
-        //    List<T> list = gameplayElementContainer[GetContainer<T>()] as List<T>;
-        //    if (list.Contains(toDelete))
-        //    {
-        //        list.Remove(toDelete);
-        //    }
-        //}
-        //public List<T> GetAllElements<T>() where T : GameplayElement
-        //{
-        //    return gameplayElementContainer[GetContainer<T>()] as List<T>;
-        //}
         private int GetContainer<T>()
         {
             GameplayElementTypes gt;
@@ -98,9 +65,6 @@ namespace DungeonGenerator
             {
                 list.Add(newElement);
             }
-
-            EditorUtility.SetDirty(this);
-            AssetDatabase.SaveAssets();
         }
 
         public GameplayElement GetElement(int elementNumber, GameplayElementTypes elementType)
@@ -122,9 +86,6 @@ namespace DungeonGenerator
             {
                 list.Remove(toDelete);
             }
-
-            EditorUtility.SetDirty(this);
-            AssetDatabase.SaveAssets();
         }
 
         public List<GameplayElement> GetAllElements(GameplayElementTypes elementType)

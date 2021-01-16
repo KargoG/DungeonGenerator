@@ -38,6 +38,9 @@ namespace DungeonGenerator.Editor
             AssetDatabase.CreateAsset(action,
                 "Assets/DungeonGenerator/ScriptableObjects/GameplayElements/Actions/" + action.name + ".asset");
             _gameplayElements.AddElement(action, GameplayElementTypes.Action);
+
+            EditorUtility.SetDirty(_gameplayElements);
+            AssetDatabase.SaveAssets();
         }
 
         public static void CreateEntity(Entity entity)
@@ -45,6 +48,9 @@ namespace DungeonGenerator.Editor
             AssetDatabase.CreateAsset(entity,
                 "Assets/DungeonGenerator/ScriptableObjects/GameplayElements/Entities/" + entity.name + ".asset");
             _gameplayElements.AddElement(entity, GameplayElementTypes.Entity);
+
+            EditorUtility.SetDirty(_gameplayElements);
+            AssetDatabase.SaveAssets();
         }
 
         public static void CreateAbility(Ability ability)
@@ -52,6 +58,9 @@ namespace DungeonGenerator.Editor
             AssetDatabase.CreateAsset(ability,
                 "Assets/DungeonGenerator/ScriptableObjects/GameplayElements/Abilities/" + ability.name + ".asset");
             _gameplayElements.AddElement(ability, GameplayElementTypes.Ability);
+
+            EditorUtility.SetDirty(_gameplayElements);
+            AssetDatabase.SaveAssets();
         }
 
         public static void CreateConsumable(Consumable consumable)
@@ -59,6 +68,38 @@ namespace DungeonGenerator.Editor
             AssetDatabase.CreateAsset(consumable,
                 "Assets/DungeonGenerator/ScriptableObjects/GameplayElements/Consumables/" + consumable.name + ".asset");
             _gameplayElements.AddElement(consumable, GameplayElementTypes.Consumable);
+
+            EditorUtility.SetDirty(_gameplayElements);
+            AssetDatabase.SaveAssets();
+        }
+
+        public static void DeleteAction(Action toDelete)
+        {
+            _gameplayElements.DeleteElement(toDelete, GameplayElementTypes.Action);
+            AssetDatabase.DeleteAsset("Assets/DungeonGenerator/ScriptableObjects/GameplayElements/Actions/" + toDelete.name + ".asset");
+            EditorUtility.SetDirty(_gameplayElements);
+            AssetDatabase.SaveAssets();
+        }
+        public static void DeleteEntity(Entity toDelete)
+        {
+            _gameplayElements.DeleteElement(toDelete, GameplayElementTypes.Entity);
+            AssetDatabase.DeleteAsset("Assets/DungeonGenerator/ScriptableObjects/GameplayElements/Entities/" + toDelete.name + ".asset");
+            EditorUtility.SetDirty(_gameplayElements);
+            AssetDatabase.SaveAssets();
+        }
+        public static void DeleteAbility(Ability toDelete)
+        {
+            _gameplayElements.DeleteElement(toDelete, GameplayElementTypes.Ability);
+            AssetDatabase.DeleteAsset("Assets/DungeonGenerator/ScriptableObjects/GameplayElements/Abilities/" + toDelete.name + ".asset");
+            EditorUtility.SetDirty(_gameplayElements);
+            AssetDatabase.SaveAssets();
+        }
+        public static void DeleteConsumable(Consumable toDelete)
+        {
+            _gameplayElements.DeleteElement(toDelete, GameplayElementTypes.Consumable);
+            AssetDatabase.DeleteAsset("Assets/DungeonGenerator/ScriptableObjects/GameplayElements/Consumables/" + toDelete.name + ".asset");
+            EditorUtility.SetDirty(_gameplayElements);
+            AssetDatabase.SaveAssets();
         }
 
         public static GameplayGraph CreateGameplayGraph(string name)
@@ -90,14 +131,20 @@ namespace DungeonGenerator.Editor
             AssetDatabase.CreateAsset(createdGameplay,
                 "Assets/DungeonGenerator/ScriptableObjects/Gameplay/" + createdGameplay.name + ".asset");
 
-            GetGameplayContainer().AddGameplay(createdGameplay);
+            _gameplay.AddGameplay(createdGameplay);
+
+            EditorUtility.SetDirty(_gameplay);
+            AssetDatabase.SaveAssets();
         }
 
         public static void DeleteGameplay(Gameplay gameplayToDelete)
         {
-            GetGameplayContainer().RemoveGameplay(gameplayToDelete);
+            _gameplay.RemoveGameplay(gameplayToDelete);
             AssetDatabase.DeleteAsset("Assets/DungeonGenerator/ScriptableObjects/Gameplay/" + gameplayToDelete.name +
                                       ".asset");
+
+            EditorUtility.SetDirty(_gameplay);
+            AssetDatabase.SaveAssets();
         }
 
         public static RoomGraph CreateRoomGraph(string name, GameplayGraph graphToTransform)

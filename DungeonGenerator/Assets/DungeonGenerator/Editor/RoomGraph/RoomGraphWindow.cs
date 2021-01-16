@@ -68,7 +68,7 @@ namespace DungeonGenerator.Editor
             {
                 DungeonRoom toDraw = _graphs[_shownGraph].DungeonGraph[i];
 
-
+                // TODO I don't want this every frame
                 toDraw.Position = new Vector2(0, i * (50 + 20));
                 toDraw.DrawConnections(new Vector2(150, 50));
                 toDraw.DrawNode(new Vector2(150, 50));

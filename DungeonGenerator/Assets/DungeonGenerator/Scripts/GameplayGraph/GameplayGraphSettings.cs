@@ -1,32 +1,27 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using DungeonGenerator;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace DungeonGenerator.Editor
+namespace DungeonGenerator
 {
     [CreateAssetMenu(fileName = "new Graph Settings", menuName = "DungeonGenerator/GraphSettings")]
     public class GameplayGraphSettings : ScriptableObject
     {
         [SerializeField] private List<Gameplay> _startGameplay = new List<Gameplay>();
-
-        public List<Gameplay> StartGameplay
+        public IReadOnlyList<Gameplay> StartGameplay
         {
-            get { return _startGameplay; }
+            get { return _startGameplay.AsReadOnly(); }
         }
 
         [SerializeField] private List<Gameplay> _endGameplay = new List<Gameplay>();
-
-        public List<Gameplay> EndGameplay
+        public IReadOnlyList<Gameplay> EndGameplay
         {
-            get { return _endGameplay; }
+            get { return _endGameplay.AsReadOnly(); }
         }
 
         [SerializeField] private List<Gameplay> _mustIncludeGameplay = new List<Gameplay>();
-
-        public List<Gameplay> MustIncludeGameplay
+        public IReadOnlyList<Gameplay> MustIncludeGameplay
         {
-            get { return _mustIncludeGameplay; }
+            get { return _mustIncludeGameplay.AsReadOnly(); }
         }
 
         [SerializeField] private int _minStartGraphLength = 5;

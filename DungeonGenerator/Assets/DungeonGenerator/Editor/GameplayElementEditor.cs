@@ -245,9 +245,25 @@ namespace DungeonGenerator.Editor
                         "You cant delete a gameplay element if it is still used in defined gameplay!", null);
                 }
                 else
-                    DataAccess.GetGameplayElementContainer().DeleteElement(
-                        DataAccess.GetGameplayElementContainer().GetElement(_selectedElement, _currentlyEditedType),
-                        _currentlyEditedType);
+                {
+                    GameplayElement toDelete = DataAccess.GetGameplayElementContainer()
+                        .GetElement(_selectedElement, _currentlyEditedType);
+                    switch (_currentlyEditedType)
+                    {
+                        case GameplayElementTypes.Action:
+                            DataAccess.DeleteAction(toDelete as Action);
+                            break;
+                        case GameplayElementTypes.Entity:
+                            DataAccess.DeleteEntity(toDelete as Entity);
+                            break;
+                        case GameplayElementTypes.Ability:
+                            DataAccess.DeleteAbility(toDelete as Ability);
+                            break;
+                        case GameplayElementTypes.Consumable:
+                            DataAccess.DeleteConsumable(toDelete as Consumable);
+                            break;
+                    }
+                }
 
                 _editableGameplayStringRepresentation = null;
             }
