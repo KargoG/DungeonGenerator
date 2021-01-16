@@ -51,12 +51,17 @@ namespace DungeonGenerator.Editor
             HandleEvents(e);
             e.mousePosition = originalMousePos;
 
+            if (GUILayout.Button("Save Stuff"))
+            {
+                EditorUtility.SetDirty(_graphs[_shownGraph]);
+                AssetDatabase.SaveAssets();
+            }
+
             if (_graphs.Count > 0)
             {
                 if (GUILayout.Button("RunReplacementPass"))
                 {
-                    WarningWindow.ShowWindow("This isn't finished yet!", null);
-                    //RunPass();
+                    RunPass();
                 }
 
                 ShowGraphEditing();
@@ -140,7 +145,7 @@ namespace DungeonGenerator.Editor
                 return;
             }
 
-            GameplayGraphManager.CreateStartGraph(_newGraphName, _settings ? _settings : new GameplayGraphSettings());
+            GameplayGraphManager.CreateStartGraph(_newGraphName, _settings ? _settings : CreateInstance<GameplayGraphSettings>());
             ReloadGraphData();
         }
 

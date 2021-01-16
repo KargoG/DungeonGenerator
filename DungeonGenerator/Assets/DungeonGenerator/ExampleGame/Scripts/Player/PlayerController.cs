@@ -72,6 +72,13 @@ namespace DungeonGenerator.ExampleGame
                     continue;
                 }
 
+                Door door = possibleInteraction.GetComponent<Door>();
+
+                if (door)
+                {
+                    door.ExitRoom(gameObject);
+                    continue;
+                }
             }
         }
 

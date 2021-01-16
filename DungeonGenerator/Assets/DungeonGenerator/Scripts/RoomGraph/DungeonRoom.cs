@@ -1,26 +1,26 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using DungeonGenerator;
 using UnityEditor;
 using UnityEngine;
 
 namespace DungeonGenerator
 {
+    [Serializable]
     public class DungeonRoom : ScriptableObject
     {
-        private List<GameplayRepresentation> _gameplayInRoom = new List<GameplayRepresentation>();
+        [SerializeField] private List<GameplayRepresentation> _gameplayInRoom = new List<GameplayRepresentation>();
         public IReadOnlyList<GameplayRepresentation> GameplayInRoom
         {
             get { return _gameplayInRoom.AsReadOnly(); }
         }
 
-        private List<DungeonRoom> _nextRoom = new List<DungeonRoom>();
+        [SerializeField] private List<DungeonRoom> _nextRoom = new List<DungeonRoom>();
         public IReadOnlyList<DungeonRoom> NextRoom
         {
             get { return _nextRoom.AsReadOnly(); }
         }
 
-        private List<DungeonRoom> _previousRoom = new List<DungeonRoom>();
+        [SerializeField] private List<DungeonRoom> _previousRoom = new List<DungeonRoom>();
         public IReadOnlyList<DungeonRoom> PreviousRoom
         {
             get { return _previousRoom.AsReadOnly(); }
@@ -28,10 +28,11 @@ namespace DungeonGenerator
 
         void OnEnable()
         {
-            hideFlags = HideFlags.HideAndDontSave;
+            //hideFlags = HideFlags.HideAndDontSave;
 
             if (_gameplayInRoom == null)
                 _gameplayInRoom = new List<GameplayRepresentation>();
+
             if (_nextRoom == null)
                 _nextRoom = new List<DungeonRoom>();
         }
@@ -41,6 +42,7 @@ namespace DungeonGenerator
             DungeonRoom createdRoom = CreateInstance<DungeonRoom>();
 
             createdRoom._gameplayInRoom.Add(gameplayInRoom);
+            //AssetDatabase.AddObjectToAsset(gameplayInRoom, "Assets/DungeonGenerator/ScriptableObjects/GameplayGraphs/LevelGraphs/" + name + ".asset");
 
             return createdRoom;
         }
@@ -50,6 +52,11 @@ namespace DungeonGenerator
             DungeonRoom createdRoom = CreateInstance<DungeonRoom>();
 
             createdRoom._gameplayInRoom.AddRange(gameplayInRoom);
+            //foreach (GameplayRepresentation gameplayRepresentation in gameplayInRoom)
+            //{
+            //    AssetDatabase.AddObjectToAsset(gameplayRepresentation, "Assets/DungeonGenerator/ScriptableObjects/GameplayGraphs/LevelGraphs/" + name + ".asset");
+            //}
+
 
             return createdRoom;
         }

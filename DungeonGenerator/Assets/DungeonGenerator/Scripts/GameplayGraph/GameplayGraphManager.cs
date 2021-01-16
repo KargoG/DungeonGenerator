@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using DungeonGenerator.Editor;
+using UnityEditor;
 using UnityEngine;
 
 namespace DungeonGenerator
@@ -66,6 +67,11 @@ namespace DungeonGenerator
             {
                 startGraph.GameplayInGraph[i].Position = new Vector2(0, i * (50 + 20));
             }
+
+#if UNITY_EDITOR
+            EditorUtility.SetDirty(startGraph);
+            AssetDatabase.SaveAssets();
+#endif
 
             return startGraph;
         }

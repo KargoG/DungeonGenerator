@@ -1,8 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using DungeonGenerator.Editor;
+using UnityEditor;
 using UnityEngine;
 
 namespace DungeonGenerator
 {
+    [Serializable]
     public class RoomGraph : ScriptableObject
     {
         [SerializeField] private string _name;
@@ -12,7 +16,7 @@ namespace DungeonGenerator
             get { return _name; }
         }
 
-        [SerializeField] [HideInInspector] private List<DungeonRoom> _dungeonGraph = new List<DungeonRoom>();
+        [SerializeField] private List<DungeonRoom> _dungeonGraph;
 
         public List<DungeonRoom> DungeonGraph
         {
@@ -21,10 +25,15 @@ namespace DungeonGenerator
 
         [SerializeField] private DungeonRoom _firstRoom;
 
+        void OnEnable()
+        {
+            if (_dungeonGraph == null)
+                _dungeonGraph = new List<DungeonRoom>();
+        }
 
         public static RoomGraph CreateStartingGraph(string name, GameplayGraph gameplayGraph)
         {
-            RoomGraph newGraph = CreateInstance<RoomGraph>();
+            RoomGraph newGraph = DataAccess.CreateRoomGraph(name);
 
             newGraph._name = name;
 
@@ -53,6 +62,9 @@ namespace DungeonGenerator
             {
                 _firstRoom = newRoom;
             }
+
+            AssetDatabase.AddObjectToAsset(gameplayInRoom, "Assets/DungeonGenerator/ScriptableObjects/RoomGraphs/" + name + ".asset");
+            AssetDatabase.AddObjectToAsset(_dungeonGraph[_dungeonGraph.Count - 1], "Assets/DungeonGenerator/ScriptableObjects/RoomGraphs/" + name + ".asset");
         }
     }
 }

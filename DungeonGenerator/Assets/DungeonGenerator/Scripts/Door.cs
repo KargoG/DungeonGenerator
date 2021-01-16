@@ -6,7 +6,7 @@ namespace DungeonGenerator
 {
     public class Door : MonoBehaviour, IRoomConnector
     {
-        private Door _otherSide = null;
+        [SerializeField] private Door _otherSide;
 
         [SerializeField] private float _exitOffset = 0.5f;
 
@@ -20,7 +20,7 @@ namespace DungeonGenerator
         {
             if (!_otherSide)
             {
-                _otherSide = exit.GetComponent<Door>();
+                _otherSide = exit.GetComponentInChildren<Door>();
                 if (!_otherSide)
                     Debug.LogError("A door has to lead to another door!");
             }

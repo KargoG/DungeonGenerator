@@ -1,188 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.PlayerLoop;
-using UnityEngine.UIElements;
 
 namespace DungeonGenerator
 {
-    [Serializable]
-    public class GameplayRepresentation : ScriptableObject
-    {
-        [SerializeField] private Gameplay _gameplay;
-        public Gameplay Gameplay { get{ return _gameplay; } }
-        [SerializeField] private List<GameplayRepresentation> _nextGameplay;
-        public IReadOnlyList<GameplayRepresentation> NextGameplay
-        {
-            get { return _nextGameplay; }
-        }
-
-        [SerializeField] private List<GameplayRepresentation> _previousGameplay;
-        public IReadOnlyList<GameplayRepresentation> PreviousGameplay
-        {
-            get { return _previousGameplay; }
-        }
-
-        void OnEnable()
-        {
-            hideFlags = HideFlags.HideAndDontSave;
-            if (_nextGameplay == null)
-                _nextGameplay = new List<GameplayRepresentation>();
-            if (_previousGameplay == null)
-                _previousGameplay = new List<GameplayRepresentation>();
-#if UNITY_EDITOR
-            //if (_position == null)
-            //    _position = new Vector2();
-            if ((int)_nodeDimensions.width == 0)
-                _nodeDimensions = new Rect(0, 0, 150, 50);
-#endif
-        }
-
-        private DungeonRoom _room = null;
-
-        public DungeonRoom RoomGameplayIsIn
-        {
-            get { return _room; }
-            set { _room = value; }
-        }
-
-#if UNITY_EDITOR
-        //[SerializeField] private Vector2 _position;
-        [SerializeField] private Rect _nodeDimensions;
-        public Vector2 Position
-        {
-            get { return _nodeDimensions.position; }
-            set { _nodeDimensions.position = value; }
-        }
-
-        private bool _dragging = false;
-
-        public bool HandleInput(Event e)
-        {
-
-            if (_nodeDimensions.Contains(e.mousePosition))
-            {
-                if (e.type == EventType.MouseDown)
-                {
-                    if (e.button == 0)
-                    {
-                        if (!_dragging)
-                        {
-                            _dragging = true;
-                            return false;
-                        }
-                    }
-                }
-            }
-
-            if (_dragging && e.type == EventType.MouseDrag)
-            {
-                _nodeDimensions.position = _nodeDimensions.position + e.delta / 2;
-                return true;
-            }
-
-            if (_dragging && e.type == EventType.MouseUp)
-            {
-                _dragging = false;
-                return false;
-            }
-
-            return false;
-        }
-
-        public bool IsInRect(Vector2 mousePos)
-        {
-            Vector2 mouseOffset = GUILayoutUtility.GetLastRect().position;
-            //mouseOffset.y += 30;
-
-            Vector2 relativeMousePos = mousePos - mouseOffset;
-
-            return relativeMousePos.x > _nodeDimensions.position.x && relativeMousePos.x < _nodeDimensions.position.x + 150 && relativeMousePos.y > _nodeDimensions.position.y && relativeMousePos.y < _nodeDimensions.position.y + 50;
-        }
-
-        public void DrawNode(Vector2 offset)
-        {
-            Rect relativePos = _nodeDimensions;
-            relativePos.position += offset;
-            GUI.Box(relativePos, _gameplay.ToString(), new GUIStyle(GUI.skin.button));
-        }
-
-        public void DrawConnections(Vector2 offset)
-        {
-            Color oldColor = GUI.color;
-            GUI.color = Color.green;
-            foreach (GameplayRepresentation gameplayRepresentation in _nextGameplay)
-            {
-                Handles.DrawLine(_nodeDimensions.position + _nodeDimensions.size / 2 + offset, gameplayRepresentation._nodeDimensions.position + _nodeDimensions.size / 2 + offset);
-            }
-
-            GUI.color = oldColor;
-        }
-
-#endif
-        public static GameplayRepresentation Create(Gameplay gameplay)
-        {
-            GameplayRepresentation newGameplayRepresentation = CreateInstance<GameplayRepresentation>();
-            newGameplayRepresentation._gameplay = gameplay;
-
-            return newGameplayRepresentation;
-        }
-
-        public static GameplayRepresentation Create(GameplayRepresentation gameplay)
-        {
-            GameplayRepresentation newGameplayRepresentation = CreateInstance<GameplayRepresentation>();
-            newGameplayRepresentation._gameplay = gameplay._gameplay;
-            newGameplayRepresentation._nextGameplay = gameplay._nextGameplay;
-            newGameplayRepresentation._previousGameplay = gameplay._previousGameplay;
-            newGameplayRepresentation._nodeDimensions.position = gameplay._nodeDimensions.position;
-
-            return newGameplayRepresentation;
-        }
-
-        public void SetNextGameplay(List<GameplayRepresentation> nextGameplay)
-        {
-            _nextGameplay = nextGameplay;
-        }
-
-        public void SetPreviousGameplay(List<GameplayRepresentation> previousGameplay)
-        {
-            _previousGameplay = previousGameplay;
-        }
-
-        public void SpawnGameplay(GameObject roomRoot) // TODO change so gameplay has more information (like geometry and shit)
-        {
-            Instantiate(_gameplay.Entity.Representation, roomRoot.transform.position, Quaternion.identity,
-                roomRoot.transform);
-        }
-
-        public void AddNextGameplay(GameplayRepresentation newNextGameplay)
-        {
-            if (!_nextGameplay.Contains(newNextGameplay))
-                _nextGameplay.Add(newNextGameplay);
-        }
-
-        public void AddPreviousGameplay(GameplayRepresentation newPreviousGameplay)
-        {
-            if (!_previousGameplay.Contains(newPreviousGameplay))
-                _previousGameplay.Add(newPreviousGameplay);
-        }
-
-        public void RemoveNextGameplay(GameplayRepresentation toRemove)
-        {
-            if (_nextGameplay.Contains(toRemove))
-                _nextGameplay.Add(toRemove);
-        }
-
-        public void RemovePreviousGameplay(GameplayRepresentation toRemove)
-        {
-            if (_previousGameplay.Contains(toRemove))
-                _previousGameplay.Add(toRemove);
-        }
-    }
-
     [Serializable]
     public class GameplayGraph : ScriptableObject
     {
@@ -228,11 +50,17 @@ namespace DungeonGenerator
             _gameplayInGraph.Add(GameplayRepresentation.Create(toAdd));
             if (_startingGameplay.Count == 0)
                 _startingGameplay.Add(_gameplayInGraph[0]);
+
+            AssetDatabase.AddObjectToAsset(_gameplayInGraph[_gameplayInGraph.Count - 1], "Assets/DungeonGenerator/ScriptableObjects/GameplayGraphs/LevelGraphs/" + name + ".asset");
         }
 
-        public List<GameplayRepresentation> CreateCopyOfGameplay()
+        public List<GameplayRepresentation> CreateCopyOfGameplay(out List<GameplayRepresentation> startingGameplay,
+            out List<GameplayRepresentation> endGameplay)
         {
             List<GameplayRepresentation> copy = new List<GameplayRepresentation>();
+            startingGameplay = new List<GameplayRepresentation>();
+            endGameplay = new List<GameplayRepresentation>();
+
             Dictionary<GameplayRepresentation, GameplayRepresentation> listToConnect =
                 new Dictionary<GameplayRepresentation, GameplayRepresentation>();
 
@@ -242,6 +70,11 @@ namespace DungeonGenerator
                 GameplayRepresentation newGameplay = GameplayRepresentation.Create(gameplayRepresentation);
                 copy.Add(newGameplay);
                 listToConnect.Add(gameplayRepresentation, newGameplay);
+
+                if (_startingGameplay.Contains(gameplayRepresentation))
+                    startingGameplay.Add(newGameplay);
+                if (_endGameplay.Contains(gameplayRepresentation))
+                    endGameplay.Add(newGameplay);
             }
 
             // Properly Connect Copies
@@ -267,63 +100,178 @@ namespace DungeonGenerator
             return copy;
         }
 
-        // TODO finish this shit
+        public List<GameplayRepresentation> CreateCopyOfGameplay()
+        {
+            return CreateCopyOfGameplay(out List<GameplayRepresentation> unused, out List<GameplayRepresentation> unusedAsWell);
+        }
+
+
         public void InsertSubgraph(GameplayGraph toReplace, GameplayGraph replacement)
         {
-            GameplayRepresentation replacementStart = FindSubgraph(toReplace);
+            KeyValuePair<GameplayRepresentation, GameplayRepresentation> replacementStart = FindSubgraph(toReplace);
 
-            if (replacementStart == null)
+            if (replacementStart.Key == null)
                 return;
 
-            // TODO Replace
-        }
+            List<GameplayRepresentation> replacementCopy = replacement.CreateCopyOfGameplay(out List<GameplayRepresentation> start, out List<GameplayRepresentation> end);
+            _gameplayInGraph.AddRange(replacementCopy);
 
-        // TODO finish this shit
-        private GameplayRepresentation FindSubgraph(GameplayGraph toSearch)
-        {
-            foreach (GameplayRepresentation startInSearchedPattern in toSearch.StartingGameplay)
+            foreach (GameplayRepresentation copy in replacementCopy)
             {
-                for (int i = 1; i < _gameplayInGraph.Count; i++)
-                {
-                    if (startInSearchedPattern.Gameplay != _gameplayInGraph[i].Gameplay)
-                        continue;
-
-                    GameplayRepresentation lastGameplay = ComparePattern(_gameplayInGraph[i], startInSearchedPattern);
-
-
-                }
+                AssetDatabase.AddObjectToAsset(copy, "Assets/DungeonGenerator/ScriptableObjects/GameplayGraphs/LevelGraphs/" + name + ".asset");
             }
 
-            return null;
+            foreach (GameplayRepresentation toPrepare in replacementStart.Key.PreviousGameplay)
+            {
+                foreach (GameplayRepresentation startingGameplay in start)
+                {
+                    toPrepare.AddNextGameplay(startingGameplay);
+                    startingGameplay.AddPreviousGameplay(toPrepare);
+                }
+
+                toPrepare.RemoveNextGameplay(replacementStart.Key);
+                //replacementStart.Key.RemovePreviousGameplay(toPrepare);
+            }
+            foreach (GameplayRepresentation toPrepare in replacementStart.Value.NextGameplay)
+            {
+                foreach (GameplayRepresentation endGameplay in end)
+                {
+                    toPrepare.AddPreviousGameplay(endGameplay);
+                    endGameplay.AddNextGameplay(toPrepare);
+                }
+                toPrepare.RemovePreviousGameplay(replacementStart.Value);
+            }
+
+            RemoveGameplay(replacementStart.Value);
+            RemoveGameplay(replacementStart.Key);
+            // TODO the replaed Gameplay is not longer linked but still in memory. Delete it if you dont want graphs to turn into garbage dumps
         }
 
-        // TODO this method is just slapped together. It will NOT work on complicated graphs. Replace for proper algorithm
-        private GameplayRepresentation ComparePattern(GameplayRepresentation startInThisGraph, GameplayRepresentation startInSearchedPattern)
+        private KeyValuePair<GameplayRepresentation, GameplayRepresentation> FindSubgraph(GameplayGraph toSearch)
         {
-            if (startInThisGraph.Gameplay != startInSearchedPattern.Gameplay)
-                return null;
+            KeyValuePair<GameplayRepresentation, GameplayRepresentation> result;
+            List<Gameplay> thisGraphsString = GetStringFromPosition(_startingGameplay[0]);
+            List<Gameplay> subgraphString = GetStringFromPosition(toSearch.StartingGameplay[0]);
 
-            GameplayRepresentation lastGameplay = null;
+            int startPos = -1;
+            int endPos = -1;
 
-            foreach (GameplayRepresentation nextGameplay in startInSearchedPattern.NextGameplay)
+            for (int i = 0; i < thisGraphsString.Count; i++)
             {
-                bool foundFit = false;
-
-                foreach (GameplayRepresentation possiblePaths in nextGameplay.NextGameplay)
+                if (thisGraphsString[i] == subgraphString[0])
                 {
-                    lastGameplay = ComparePattern(possiblePaths, startInSearchedPattern);
-                    if (lastGameplay != null)
+                    int patternEndPos = ComparePattern(thisGraphsString, subgraphString, i);
+                    if (patternEndPos >= 0)
                     {
-                        foundFit = true;
+                        startPos = i;
+                        endPos = i + patternEndPos;
                         break;
                     }
                 }
-
-                if (!foundFit)
-                    return null;
             }
 
-            return lastGameplay;
+            if (startPos >= 0)
+            {
+                result = new KeyValuePair<GameplayRepresentation, GameplayRepresentation>(GetGameplayAtPosition(startPos), GetGameplayAtPosition(endPos));
+            }
+
+            return result;
+        }
+
+        private GameplayRepresentation GetGameplayAtPosition(int pos)
+        {
+            Stack<GameplayRepresentation> positionStack = new Stack<GameplayRepresentation>();
+            Stack<int> branchingPath = new Stack<int>();
+
+            GameplayRepresentation currentGameplay = _startingGameplay[0];
+            int lastUsedPath = 0;
+
+            for (int i = 0; i < pos; i++)
+            {
+                if (currentGameplay.NextGameplay.Count > 1)
+                {
+                    positionStack.Push(currentGameplay);
+                    branchingPath.Push(lastUsedPath);
+                }
+
+                if (lastUsedPath < currentGameplay.NextGameplay.Count)
+                    currentGameplay = currentGameplay.NextGameplay[lastUsedPath];
+                else
+                    currentGameplay = null;
+
+                lastUsedPath = 0;
+
+                if (currentGameplay == null)
+                {
+                    currentGameplay = positionStack.Pop();
+                    lastUsedPath = branchingPath.Pop() + 1;
+                    i--;
+                }
+            }
+
+            return currentGameplay;
+        }
+
+        private List<Gameplay> GetStringFromPosition(GameplayRepresentation start)
+        {
+            List<Gameplay> asString = new List<Gameplay>();
+
+            GameplayRepresentation nextLetter = start;
+
+            asString.Add(nextLetter.Gameplay);
+
+            if (nextLetter.NextGameplay.Count > 1)
+            {
+                foreach (GameplayRepresentation gameplayRepresentation in nextLetter.NextGameplay)
+                {
+                    asString.Add(Gameplay.Empty);
+                    asString.AddRange(GetStringFromPosition(gameplayRepresentation));
+                    asString.Add(null);
+                }
+            }
+            else if(nextLetter.NextGameplay.Count == 1)
+            {
+                asString.AddRange(GetStringFromPosition(nextLetter.NextGameplay[0]));
+            }
+
+
+            return asString;
+        }
+
+        private int ComparePattern(List<Gameplay> thisString, List<Gameplay> patternString, int startPosition)
+        {
+            int pos = 0;
+
+            for (int i = 0; i < patternString.Count; i++, pos++)
+            {
+                if (startPosition + pos >= thisString.Count)
+                    return -1;
+                if (thisString[startPosition + pos] != patternString[i])
+                {
+                    if (patternString[i] == null) // End Subgraph
+                    {
+                        while (thisString[startPosition + pos] != null)
+                        {
+                            pos++;
+                            if (startPosition + pos >= thisString.Count)
+                                return -1;
+                        }
+                    }
+                    else if (thisString[startPosition + pos] == Gameplay.Empty) // Open Subgraph
+                    {
+                        i--;
+                        continue;
+                    }
+                    else
+                    {
+                        return -1;
+                    }
+                }
+            }
+
+            pos--;
+
+            return pos;
         }
 
         public void RemoveGameplay(GameplayRepresentation gp)
@@ -334,6 +282,12 @@ namespace DungeonGenerator
                 _startingGameplay.Remove(gp);
             if (_gameplayInGraph.Contains(gp))
                 _gameplayInGraph.Remove(gp);
+
+            foreach (GameplayRepresentation gameplay in _gameplayInGraph)
+            {
+                gameplay.RemoveNextGameplay(gp);
+                gameplay.RemovePreviousGameplay(gp);
+            }
         }
 
         public void ChangeStartingGameplay(GameplayRepresentation gp)

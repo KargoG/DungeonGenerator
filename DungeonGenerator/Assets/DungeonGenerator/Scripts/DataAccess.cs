@@ -147,13 +147,16 @@ namespace DungeonGenerator.Editor
             AssetDatabase.SaveAssets();
         }
 
-        public static RoomGraph CreateRoomGraph(string name, GameplayGraph graphToTransform)
+        public static RoomGraph CreateRoomGraph(string name)
         {
-            RoomGraph newGraph = RoomGraph.CreateStartingGraph(name, graphToTransform);
+            RoomGraph newGraph = CreateInstance<RoomGraph>();
             AssetDatabase.CreateAsset(newGraph,
                 "Assets/DungeonGenerator/ScriptableObjects/RoomGraphs/" + name + ".asset");
 
             return newGraph;
+            //newGraph = RoomGraph.CreateStartingGraph(name, graphToTransform);
+            //EditorUtility.SetDirty(newGraph);
+            //AssetDatabase.SaveAssets();
         }
 
         private static RoomGraph LoadRoomGraph(string guid)

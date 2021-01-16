@@ -131,7 +131,8 @@ namespace DungeonGenerator.Editor
                 return;
             }
 
-            DataAccess.CreateRoomGraph(_newGraphName, _graphToConvert);
+            RoomGraph.CreateStartingGraph(_newGraphName, _graphToConvert);
+            //DataAccess.CreateRoomGraph(_newGraphName, _graphToConvert);
 
             ReloadGraphData();
         }
@@ -160,6 +161,7 @@ namespace DungeonGenerator.Editor
             foreach (DungeonRoom dungeonRoom in _graphs[_shownGraph].DungeonGraph)
             {
                 dungeonRoom.PrepareConnections();
+
                 Vector3 roomPosition =
                     new Vector3(dungeonRoom.Position.x, 0, dungeonRoom.Position.y) / 3; // TODO this value is hardcoded
 
@@ -180,9 +182,9 @@ namespace DungeonGenerator.Editor
                 {
                     connections[connections.Count - 1][i] = roomInstancePairs[dungeonRoom.NextRoom[i]];
                 }
-                for (int i = 0; i < dungeonRoom.NextRoom.Count; i++)
+                for (int i = 0; i < dungeonRoom.PreviousRoom.Count; i++)
                 {
-                    connections[connections.Count - 1][dungeonRoom.NextRoom.Count + i] = roomInstancePairs[dungeonRoom.NextRoom[i]];
+                    connections[connections.Count - 1][dungeonRoom.NextRoom.Count + i] = roomInstancePairs[dungeonRoom.PreviousRoom[i]];
                 }
 
                 roomInstancePairs[dungeonRoom].GetComponent<IRoomCreator>().SetUpConnections(connections[connections.Count - 1]);

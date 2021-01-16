@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class DefaultRoomCreator : MonoBehaviour, IRoomCreator
 {
-    [SerializeReference] private List<IRoomConnector> _roomConnectors = new List<IRoomConnector>();
+    private List<IRoomConnector> _roomConnectors = new List<IRoomConnector>();
     [SerializeField] private Door _doorPre = null;
     public void CreateRoom(DungeonRoom dungeonRoom)
     {
@@ -13,11 +13,11 @@ public class DefaultRoomCreator : MonoBehaviour, IRoomCreator
         print("roooom");
         foreach (DungeonRoom nextRoom in dungeonRoom.NextRoom)
         {
-            _roomConnectors.Add(Instantiate(_doorPre));
+            _roomConnectors.Add(Instantiate(_doorPre, transform));
         }
         foreach (DungeonRoom previousRoom in dungeonRoom.PreviousRoom)
         {
-            _roomConnectors.Add(Instantiate(_doorPre));
+            _roomConnectors.Add(Instantiate(_doorPre, transform));
         }
     }
 

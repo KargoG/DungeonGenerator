@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace DungeonGenerator
 {
@@ -16,6 +17,15 @@ namespace DungeonGenerator
     [Serializable]
     public class Gameplay : ScriptableObject
     {
+        private static Gameplay _empty = null;
+        public static Gameplay Empty {
+            get
+            {
+                if (_empty == null) _empty = CreateInstance<Gameplay>();
+                return _empty;
+            }
+        }
+
         [SerializeField] private Action _action;
         public Action Action
         {
