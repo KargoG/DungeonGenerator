@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using DungeonGenerator;
 using DungeonGenerator.Editor;
@@ -15,8 +16,8 @@ namespace DungeonGenerator.Editor
         private List<string> _graphNames = new List<string>();
         private GameplayGraph _graphToConvert = null;
         private string _newGraphName = "";
-        [SerializeField] private UnityEvent<DungeonRoom> _roomCreator = new RoomCreator();
-        private GameObject _roomPrefab = null;
+        //[SerializeField] private UnityEvent<DungeonRoom> _roomCreator = new RoomCreator();
+        private GameObject _roomCreator = null;
 
         [MenuItem("Window/DungeonCreator/RoomGraphEditor")]
         public static void ShowWindow()
@@ -47,7 +48,7 @@ namespace DungeonGenerator.Editor
             _newGraphName = EditorGUILayout.TextField("New Graph name", _newGraphName);
             _graphToConvert =
                 EditorGUILayout.ObjectField(_graphToConvert, typeof(GameplayGraph), false) as GameplayGraph;
-            _roomPrefab = EditorGUILayout.ObjectField(_roomPrefab, typeof(GameObject), false) as GameObject;
+            _roomCreator = EditorGUILayout.ObjectField(_roomCreator, typeof(GameObject), false) as GameObject;
 
 
             HandleEvents(Event.current);
@@ -143,19 +144,52 @@ namespace DungeonGenerator.Editor
                 return;
             }
 
-            GameObject dungeonRoot = new GameObject("DungeonRoot");
+            if (_roomCreator.GetComponent<IRoomCreator>() == null)
+            {
+                ErrorWindow.ShowWindow("The selected room creator has no Script that inherits from IRoomCreator.", null);
+                return;
+            }
 
+            //GameObject dungeonRoot = new GameObject("DungeonRoot");
+
+
+            Dictionary<DungeonRoom, GameObject> roomInstancePairs =
+                new Dictionary<DungeonRoom, GameObject>();
+
+            // Creating the rooms
             foreach (DungeonRoom dungeonRoom in _graphs[_shownGraph].DungeonGraph)
             {
-                //_roomCreator.Invoke(dungeonRoom); TODO this shit just doesn't want to work
-
+                dungeonRoom.PrepareConnections();
                 Vector3 roomPosition =
                     new Vector3(dungeonRoom.Position.x, 0, dungeonRoom.Position.y) / 3; // TODO this value is hardcoded
 
-                GameObject room = Instantiate(_roomPrefab, roomPosition, Quaternion.identity, dungeonRoot.transform);
+                GameObject roomRoot = Instantiate(_roomCreator, roomPosition, Quaternion.identity);
+                IRoomCreator roomCreator = roomRoot.GetComponent<IRoomCreator>();
+                roomCreator.CreateRoom(dungeonRoom);
+
+                roomInstancePairs.Add(dungeonRoom, roomRoot);
+            }
+
+            List<GameObject[]> connections = new List<GameObject[]>();
+
+            // Set up connections and gameplay
+            foreach (DungeonRoom dungeonRoom in _graphs[_shownGraph].DungeonGraph)
+            {
+                connections.Add(new GameObject[dungeonRoom.NextRoom.Count + dungeonRoom.PreviousRoom.Count]);
+                for (int i = 0; i < dungeonRoom.NextRoom.Count; i++)
+                {
+                    connections[connections.Count - 1][i] = roomInstancePairs[dungeonRoom.NextRoom[i]];
+                }
+                for (int i = 0; i < dungeonRoom.NextRoom.Count; i++)
+                {
+                    connections[connections.Count - 1][dungeonRoom.NextRoom.Count + i] = roomInstancePairs[dungeonRoom.NextRoom[i]];
+                }
+
+                roomInstancePairs[dungeonRoom].GetComponent<IRoomCreator>().SetUpConnections(connections[connections.Count - 1]);
+
                 foreach (GameplayRepresentation gameplayInRoom in dungeonRoom.GameplayInRoom)
                 {
-                    gameplayInRoom.SpawnGameplay(room);
+                    gameplayInRoom.SpawnGameplay(roomInstancePairs[dungeonRoom]);
                 }
             }
         }

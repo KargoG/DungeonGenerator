@@ -4,28 +4,37 @@ using UnityEngine;
 
 namespace DungeonGenerator
 {
-    public class Door : MonoBehaviour
+    public class Door : MonoBehaviour, IRoomConnector
     {
         private Door _otherSide = null;
-        public Door OtherSide { set { if(!_otherSide) _otherSide = value; } }
 
         [SerializeField] private float _exitOffset = 0.5f;
-
-        public void GoThroughDoor(GameObject objectToGoThroughDoor)
-        {
-            if (!_otherSide)
-            {
-                Debug.LogError("The dor you are trying to go through leads nowhere");
-            }
-
-            objectToGoThroughDoor.transform.position =
-                _otherSide.transform.position + _otherSide.transform.forward * _otherSide._exitOffset;
-        }
 
         void OnDrawGizmos()
         {
             Gizmos.color = Color.green;
             Gizmos.DrawSphere(transform.position + transform.forward * _exitOffset, 0.1f);
+        }
+
+        public void SetUpConnection(GameObject exit)
+        {
+            if (!_otherSide)
+            {
+                _otherSide = exit.GetComponent<Door>();
+                if (!_otherSide)
+                    Debug.LogError("A door has to lead to another door!");
+            }
+        }
+
+        public void ExitRoom(GameObject exitingObject)
+        {
+            if (!_otherSide)
+            {
+                Debug.LogError("The d0or you are trying to go through leads nowhere");
+            }
+
+            exitingObject.transform.position =
+                _otherSide.transform.position + _otherSide.transform.forward * _otherSide._exitOffset;
         }
     }
 }

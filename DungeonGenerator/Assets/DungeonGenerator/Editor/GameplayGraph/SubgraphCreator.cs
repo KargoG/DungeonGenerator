@@ -123,9 +123,8 @@ namespace DungeonGenerator.Editor
                                     if (_connectingNode == gameplayRepresentation)
                                         continue;
 
-                                    if (_connectingNode.NextGameplay.Contains(gameplayRepresentation))
-                                        break;
-                                    _connectingNode.NextGameplay.Add(gameplayRepresentation);
+                                    _connectingNode.AddNextGameplay(gameplayRepresentation);
+                                    gameplayRepresentation.AddPreviousGameplay(_connectingNode);
 
                                     break;
                                 }
@@ -210,7 +209,9 @@ namespace DungeonGenerator.Editor
             foreach (GameplayRepresentation otherGameplay in _graphs[_shownGraph].GameplayInGraph)
             {
                 if (otherGameplay.NextGameplay.Contains(gp))
-                    otherGameplay.NextGameplay.Remove(gp);
+                    otherGameplay.RemoveNextGameplay(gp);
+                if (otherGameplay.PreviousGameplay.Contains(gp))
+                    otherGameplay.RemovePreviousGameplay(gp);
             }
 
             _graphs[_shownGraph].RemoveGameplay(gp);

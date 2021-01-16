@@ -35,7 +35,10 @@ namespace DungeonGenerator
                 newGraph.AddRoom(gameplayRepresentation);
             }
 
-            // TODO connect all rooms based on their gameplay somehow
+            foreach (DungeonRoom room in newGraph.DungeonGraph)
+            {
+                room.PrepareConnections();
+            }
 
             return newGraph;
         }

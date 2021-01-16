@@ -56,7 +56,10 @@ namespace DungeonGenerator
             for (int i = 0; i < startGraph.GameplayInGraph.Count; i++)
             {
                 if (i < startGraph.GameplayInGraph.Count - 1)
-                    startGraph.GameplayInGraph[i].NextGameplay.Add(startGraph.GameplayInGraph[i + 1]);
+                {
+                    startGraph.GameplayInGraph[i].AddNextGameplay(startGraph.GameplayInGraph[i + 1]);
+                    startGraph.GameplayInGraph[i + 1].AddPreviousGameplay(startGraph.GameplayInGraph[i]);
+                }
             }
 
             for (int i = 0; i < startGraph.GameplayInGraph.Count; i++)

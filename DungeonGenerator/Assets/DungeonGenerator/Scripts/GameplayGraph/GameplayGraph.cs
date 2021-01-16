@@ -14,24 +14,31 @@ namespace DungeonGenerator
     {
         [SerializeField] private Gameplay _gameplay;
         public Gameplay Gameplay { get{ return _gameplay; } }
-        [SerializeField] private List<GameplayRepresentation> _nextGameplay; 
+        [SerializeField] private List<GameplayRepresentation> _nextGameplay;
+        public IReadOnlyList<GameplayRepresentation> NextGameplay
+        {
+            get { return _nextGameplay; }
+        }
+
+        [SerializeField] private List<GameplayRepresentation> _previousGameplay;
+        public IReadOnlyList<GameplayRepresentation> PreviousGameplay
+        {
+            get { return _previousGameplay; }
+        }
 
         void OnEnable()
         {
             hideFlags = HideFlags.HideAndDontSave;
             if (_nextGameplay == null)
                 _nextGameplay = new List<GameplayRepresentation>();
+            if (_previousGameplay == null)
+                _previousGameplay = new List<GameplayRepresentation>();
 #if UNITY_EDITOR
             //if (_position == null)
             //    _position = new Vector2();
             if ((int)_nodeDimensions.width == 0)
                 _nodeDimensions = new Rect(0, 0, 150, 50);
 #endif
-        }
-
-        public List<GameplayRepresentation> NextGameplay
-        {
-            get { return _nextGameplay; }
         }
 
         private DungeonRoom _room = null;
@@ -129,6 +136,7 @@ namespace DungeonGenerator
             GameplayRepresentation newGameplayRepresentation = CreateInstance<GameplayRepresentation>();
             newGameplayRepresentation._gameplay = gameplay._gameplay;
             newGameplayRepresentation._nextGameplay = gameplay._nextGameplay;
+            newGameplayRepresentation._previousGameplay = gameplay._previousGameplay;
             newGameplayRepresentation._nodeDimensions.position = gameplay._nodeDimensions.position;
 
             return newGameplayRepresentation;
@@ -139,13 +147,40 @@ namespace DungeonGenerator
             _nextGameplay = nextGameplay;
         }
 
-        public void
-            SpawnGameplay(GameObject roomRoot) // TODO change so gameplay has more information (like geometry and shit)
+        public void SetPreviousGameplay(List<GameplayRepresentation> previousGameplay)
+        {
+            _previousGameplay = previousGameplay;
+        }
+
+        public void SpawnGameplay(GameObject roomRoot) // TODO change so gameplay has more information (like geometry and shit)
         {
             Instantiate(_gameplay.Entity.Representation, roomRoot.transform.position, Quaternion.identity,
                 roomRoot.transform);
         }
 
+        public void AddNextGameplay(GameplayRepresentation newNextGameplay)
+        {
+            if (!_nextGameplay.Contains(newNextGameplay))
+                _nextGameplay.Add(newNextGameplay);
+        }
+
+        public void AddPreviousGameplay(GameplayRepresentation newPreviousGameplay)
+        {
+            if (!_previousGameplay.Contains(newPreviousGameplay))
+                _previousGameplay.Add(newPreviousGameplay);
+        }
+
+        public void RemoveNextGameplay(GameplayRepresentation toRemove)
+        {
+            if (_nextGameplay.Contains(toRemove))
+                _nextGameplay.Add(toRemove);
+        }
+
+        public void RemovePreviousGameplay(GameplayRepresentation toRemove)
+        {
+            if (_previousGameplay.Contains(toRemove))
+                _previousGameplay.Add(toRemove);
+        }
     }
 
     [Serializable]
@@ -214,13 +249,19 @@ namespace DungeonGenerator
             foreach (KeyValuePair<GameplayRepresentation, GameplayRepresentation> pair in listToConnect)
             {
                 List<GameplayRepresentation> nextGameplayList = new List<GameplayRepresentation>();
+                List<GameplayRepresentation> previousGameplayList = new List<GameplayRepresentation>();
 
                 foreach (GameplayRepresentation nextGameplay in pair.Key.NextGameplay)
                 {
                     nextGameplayList.Add(listToConnect[nextGameplay]);
                 }
+                foreach (GameplayRepresentation previousGameplay in pair.Key.PreviousGameplay)
+                {
+                    previousGameplayList.Add(listToConnect[previousGameplay]);
+                }
 
                 pair.Value.SetNextGameplay(nextGameplayList);
+                pair.Value.SetPreviousGameplay(previousGameplayList);
             }
 
             return copy;
