@@ -16,8 +16,10 @@ namespace DungeonGenerator.Editor
         private List<string> _graphNames = new List<string>();
         private GameplayGraph _graphToConvert = null;
         private string _newGraphName = "";
-        //[SerializeField] private UnityEvent<DungeonRoom> _roomCreator = new RoomCreator();
+
         private GameObject _roomCreator = null;
+
+        private RoomCreationSettings _roomSettings = null;
 
         [MenuItem("Window/DungeonCreator/RoomGraphEditor")]
         public static void ShowWindow()
@@ -49,12 +51,37 @@ namespace DungeonGenerator.Editor
             _graphToConvert =
                 EditorGUILayout.ObjectField(_graphToConvert, typeof(GameplayGraph), false) as GameplayGraph;
             _roomCreator = EditorGUILayout.ObjectField(_roomCreator, typeof(GameObject), false) as GameObject;
+            _roomSettings = EditorGUILayout.ObjectField(_roomSettings, typeof(RoomCreationSettings), false) as RoomCreationSettings;
 
 
             HandleEvents(Event.current);
 
             if (_graphs.Count > 0)
+            {
+                if (GUILayout.Button("RunReplacementPass"))
+                {
+                    RunPass();
+                }
+
                 ShowGraphEditing();
+            }
+        }
+
+        private void RunPass()
+        {
+            if (!_roomSettings)
+            {
+                ErrorWindow.ShowWindow("You can not run passes without selecting room settings", null);
+                return;
+            }
+
+
+            RoomGraph graphToChange = _graphs[_shownGraph];
+
+            foreach (KeyValuePair<Tuple<Gameplay, Gameplay>, float> connectable in _roomSettings.Connectables)
+            {
+                graphToChange.ApplyMerges(connectable.Key, connectable.Value);
+            }
         }
 
         private void ShowGraphEditing()
@@ -65,16 +92,15 @@ namespace DungeonGenerator.Editor
             GUI.BeginGroup(new Rect(0, lastPos.y + GUILayoutUtility.GetLastRect().height, Screen.width,
                 Screen.height - lastPos.y - GUILayoutUtility.GetLastRect().height));
 
+
+
             for (int i = 0; i < _graphs[_shownGraph].DungeonGraph.Count; i++)
             {
                 DungeonRoom toDraw = _graphs[_shownGraph].DungeonGraph[i];
 
-                // TODO I don't want this every frame
-                toDraw.Position = new Vector2(0, i * (50 + 20));
                 toDraw.DrawConnections(new Vector2(150, 50));
                 toDraw.DrawNode(new Vector2(150, 50));
             }
-
 
             GUI.EndGroup();
 
@@ -131,8 +157,16 @@ namespace DungeonGenerator.Editor
                 return;
             }
 
-            RoomGraph.CreateStartingGraph(_newGraphName, _graphToConvert);
-            //DataAccess.CreateRoomGraph(_newGraphName, _graphToConvert);
+            RoomGraph newGraph = RoomGraph.CreateStartingGraph(_newGraphName, _graphToConvert);
+
+
+            // Give some basic positions
+            for (int i = 0; i < newGraph.DungeonGraph.Count; i++)
+            {
+                DungeonRoom toDraw = newGraph.DungeonGraph[i];
+
+                toDraw.Position = new Vector2(0, i * (50 + 20));
+            }
 
             ReloadGraphData();
         }
@@ -150,9 +184,6 @@ namespace DungeonGenerator.Editor
                 ErrorWindow.ShowWindow("The selected room creator has no Script that inherits from IRoomCreator.", null);
                 return;
             }
-
-            //GameObject dungeonRoot = new GameObject("DungeonRoot");
-
 
             Dictionary<DungeonRoom, GameObject> roomInstancePairs =
                 new Dictionary<DungeonRoom, GameObject>();

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using DungeonGenerator.Editor;
 using UnityEditor;
 using UnityEngine;
+using Random = System.Random;
 
 namespace DungeonGenerator
 {
@@ -65,6 +67,38 @@ namespace DungeonGenerator
 
             AssetDatabase.AddObjectToAsset(gameplayInRoom, "Assets/DungeonGenerator/ScriptableObjects/RoomGraphs/" + name + ".asset");
             AssetDatabase.AddObjectToAsset(_dungeonGraph[_dungeonGraph.Count - 1], "Assets/DungeonGenerator/ScriptableObjects/RoomGraphs/" + name + ".asset");
+        }
+
+        public void ApplyMerges(Tuple<Gameplay, Gameplay> gameplayToMerge, float mergeLikeliness)
+        {
+            List<DungeonRoom> roomThatCanBeMerged = _dungeonGraph.FindAll((DungeonRoom room) =>
+            {
+                bool hasGameplay = room.LastGameplay.Gameplay == gameplayToMerge.Item1;
+
+                bool hasNextGameplay = false;
+
+                foreach (DungeonRoom nextRoom in room.NextRoom)
+                {
+                    if (nextRoom.FirstGameplay.Gameplay == gameplayToMerge.Item2)
+                    {
+                        hasNextGameplay = true;
+                        break;
+                    }
+                }
+
+                return hasGameplay && hasNextGameplay;
+            });
+
+            foreach (DungeonRoom roomToMerge in roomThatCanBeMerged)
+            {
+                if (UnityEngine.Random.Range(0.0f, 1.0f) <= mergeLikeliness)
+                {
+                    DungeonRoom removedRoom = roomToMerge.MergeWithNext(gameplayToMerge.Item2);
+                    _dungeonGraph.Remove(removedRoom);
+                    AssetDatabase.RemoveObjectFromAsset(removedRoom);
+                }
+
+            }
         }
     }
 }

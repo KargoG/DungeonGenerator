@@ -121,6 +121,8 @@ namespace DungeonGenerator
                 AssetDatabase.AddObjectToAsset(copy, "Assets/DungeonGenerator/ScriptableObjects/GameplayGraphs/LevelGraphs/" + name + ".asset");
             }
 
+
+            // Re-link connections
             foreach (GameplayRepresentation toPrepare in replacementStart.Key.PreviousGameplay)
             {
                 foreach (GameplayRepresentation startingGameplay in start)
@@ -177,6 +179,7 @@ namespace DungeonGenerator
             RemoveGameplay(replacementStart.Key);
             RemoveGameplay(replacementStart.Value);
             // TODO the replaed Gameplay is not longer linked but still in memory. Delete it if you dont want graphs to turn into garbage dumps
+            // TODO gameplay that comes after key and before value still needs the new start and end hooked up
         }
 
         private KeyValuePair<GameplayRepresentation, GameplayRepresentation> FindSubgraph(GameplayGraph toSearch)

@@ -101,7 +101,7 @@ namespace DungeonGenerator
         {
             Rect relativePos = _nodeDimensions;
             relativePos.position += offset;
-            GUI.Box(relativePos, _gameplay.ToString(), new GUIStyle(GUI.skin.button));
+            GUI.Box(relativePos, _gameplay.name, new GUIStyle(GUI.skin.button));
         }
 
         public void DrawConnections(Vector2 offset)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace DungeonGenerator
 {
@@ -13,6 +14,13 @@ namespace DungeonGenerator
         {
             get { return _gameplayInRoom.AsReadOnly(); }
         }
+
+        [SerializeField] private GameplayRepresentation _lastGameplay;
+        public GameplayRepresentation LastGameplay { get { return _lastGameplay; } }
+
+        [SerializeField] private GameplayRepresentation _firstGameplay;
+        public GameplayRepresentation FirstGameplay { get { return _firstGameplay; } }
+
 
         [SerializeField] private List<DungeonRoom> _nextRoom = new List<DungeonRoom>();
         public IReadOnlyList<DungeonRoom> NextRoom
@@ -42,24 +50,12 @@ namespace DungeonGenerator
             DungeonRoom createdRoom = CreateInstance<DungeonRoom>();
 
             createdRoom._gameplayInRoom.Add(gameplayInRoom);
-            //AssetDatabase.AddObjectToAsset(gameplayInRoom, "Assets/DungeonGenerator/ScriptableObjects/GameplayGraphs/LevelGraphs/" + name + ".asset");
+            createdRoom._lastGameplay = gameplayInRoom;
+            createdRoom._firstGameplay = gameplayInRoom;
 
             return createdRoom;
         }
 
-        public static DungeonRoom Create(IEnumerable<GameplayRepresentation> gameplayInRoom)
-        {
-            DungeonRoom createdRoom = CreateInstance<DungeonRoom>();
-
-            createdRoom._gameplayInRoom.AddRange(gameplayInRoom);
-            //foreach (GameplayRepresentation gameplayRepresentation in gameplayInRoom)
-            //{
-            //    AssetDatabase.AddObjectToAsset(gameplayRepresentation, "Assets/DungeonGenerator/ScriptableObjects/GameplayGraphs/LevelGraphs/" + name + ".asset");
-            //}
-
-
-            return createdRoom;
-        }
         public void PrepareConnections()
         {
             _nextRoom.Clear();
@@ -103,7 +99,7 @@ namespace DungeonGenerator
         public void DrawNode(Vector2 size)
         {
             Rect pos = new Rect(_position, size);
-            GUI.Box(pos, "", new GUIStyle(GUI.skin.button)); // TODO add a name here
+            GUI.Box(pos, "Room: " + _lastGameplay.Gameplay.name , new GUIStyle(GUI.skin.button));
         }
 
         public void DrawConnections(Vector2 nodeSize)
@@ -122,6 +118,41 @@ namespace DungeonGenerator
         }
 
 #endif
+        public DungeonRoom MergeWithNext(Gameplay gameplayOfNextRoom)
+        {
+            foreach (DungeonRoom nextRoom in _nextRoom)
+            {
+                if (nextRoom._firstGameplay.Gameplay == gameplayOfNextRoom)
+                {
+                    // relocate all gameplay to this room
+                    foreach (GameplayRepresentation gameplayInNextRoom in nextRoom._gameplayInRoom)
+                    {
+                        gameplayInNextRoom.RoomGameplayIsIn = this;
+                    }
+                    _gameplayInRoom.AddRange(nextRoom._gameplayInRoom);
+                    _lastGameplay = nextRoom._lastGameplay;
+
+                    // reconnect all links to and from this room
+                    _nextRoom.AddRange(nextRoom._nextRoom);
+                    _previousRoom.AddRange(nextRoom._previousRoom);
+                    foreach (DungeonRoom twoRoomsAhead in nextRoom._nextRoom)
+                    {
+                        twoRoomsAhead._previousRoom.Remove(nextRoom);
+                        twoRoomsAhead._previousRoom.Add(this);
+                    }
+                    foreach (DungeonRoom brotherRoom in nextRoom._previousRoom)
+                    {
+                        brotherRoom._nextRoom.Remove(nextRoom);
+                        brotherRoom._nextRoom.Add(this);
+                    }
+                    _nextRoom.Remove(nextRoom);
+
+                    return nextRoom;
+                }
+            }
+
+            return null;
+        }
     }
 }
 

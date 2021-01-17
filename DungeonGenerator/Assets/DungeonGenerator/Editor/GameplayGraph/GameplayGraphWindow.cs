@@ -149,8 +149,6 @@ namespace DungeonGenerator.Editor
             ReloadGraphData();
         }
 
-
-        // TODO finish this shit
         void RunPass()
         {
             GameplayGraph graphToChange = _graphs[_shownGraph];

@@ -41,10 +41,10 @@ namespace DungeonGenerator.Editor
                 }
 
 
-                if (GUILayout.Button("Edit"))
-                {
-                    // TODO
-                }
+                //if (GUILayout.Button("Edit"))
+                //{
+                //    // TODO
+                //}
 
                 if (GUILayout.Button("Delete"))
                 {
