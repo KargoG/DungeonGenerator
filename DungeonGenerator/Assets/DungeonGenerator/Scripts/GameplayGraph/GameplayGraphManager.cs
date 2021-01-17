@@ -24,7 +24,11 @@ namespace DungeonGenerator
 
             foreach (Gameplay gameplay in settings.StartGameplay) // Add Nodes to beginning
             {
-                startGraph.AddGameplay(gameplay);
+                GameplayRepresentation addedGameplay = startGraph.AddGameplay(gameplay);
+
+                AssetDatabase.AddObjectToAsset(addedGameplay, "Assets/DungeonGenerator/ScriptableObjects/GameplayGraphs/LevelGraphs/" + startGraph.name + ".asset");
+                EditorUtility.SetDirty(addedGameplay);
+                AssetDatabase.SaveAssets();
             }
 
             int stillNeededNodes =
@@ -36,22 +40,33 @@ namespace DungeonGenerator
             {
                 int gameplayToSpawn = Random.Range(0, stillNeededNodes + mustHaveNodes.Count);
 
+                GameplayRepresentation addedGameplay;
+
                 if (gameplayToSpawn < mustHaveNodes.Count)
                 {
-                    startGraph.AddGameplay(mustHaveNodes[gameplayToSpawn]);
+                    addedGameplay = startGraph.AddGameplay(mustHaveNodes[gameplayToSpawn]);
                     mustHaveNodes.RemoveAt(gameplayToSpawn);
                 }
                 else
                 {
-                    startGraph.AddGameplay(DataAccess.GetGameplayContainer().GetRandomPlacableGameplay());
+                    addedGameplay = startGraph.AddGameplay(DataAccess.GetGameplayContainer().GetRandomPlacableGameplay());
                     stillNeededNodes--;
                 }
+
+
+                AssetDatabase.AddObjectToAsset(addedGameplay, "Assets/DungeonGenerator/ScriptableObjects/GameplayGraphs/LevelGraphs/" + startGraph.name + ".asset");
+                EditorUtility.SetDirty(addedGameplay);
+                AssetDatabase.SaveAssets();
             }
 
 
             foreach (Gameplay gameplay in settings.EndGameplay) // Add Nodes to end
             {
-                startGraph.AddGameplay(gameplay);
+                GameplayRepresentation addedGameplay = startGraph.AddGameplay(gameplay);
+
+                AssetDatabase.AddObjectToAsset(addedGameplay, "Assets/DungeonGenerator/ScriptableObjects/GameplayGraphs/LevelGraphs/" + startGraph.name + ".asset");
+                EditorUtility.SetDirty(addedGameplay);
+                AssetDatabase.SaveAssets();
             }
 
             for (int i = 0; i < startGraph.GameplayInGraph.Count; i++)

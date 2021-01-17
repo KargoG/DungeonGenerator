@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ceb11edf880c164baa590cccce3e403, type: 3}
   m_Name: LockedDoor
   m_EditorClassIdentifier: 
-  _representation: {fileID: 0}
+  _representation: {fileID: 85283209540132566, guid: b455d974dcef99c4a9aafb71f62e0280,
+    type: 3}

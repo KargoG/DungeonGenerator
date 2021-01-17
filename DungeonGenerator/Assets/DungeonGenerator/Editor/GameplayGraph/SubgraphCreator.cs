@@ -102,11 +102,13 @@ namespace DungeonGenerator.Editor
 
         void HandleEvents(Event e)
         {
+            if (_graphs.Count <= 0)
+                return;
+
             foreach (GameplayRepresentation gameplayNode in _graphs[_shownGraph].GameplayInGraph)
             {
                 gameplayNode.HandleInput(e);
             }
-
 
             switch (e.type)
             {
@@ -159,8 +161,6 @@ namespace DungeonGenerator.Editor
                     break;
             }
 
-            if (_graphs.Count <= 0)
-                return;
         }
 
         private void OpenNodeEditMenu(GameplayRepresentation node)
@@ -231,9 +231,12 @@ namespace DungeonGenerator.Editor
                     nodeMenu.AddItem(new GUIContent("AddGameplayNode/" + availableGameplay[i]), false,
                         (object gameplay) =>
                         {
-                            _graphs[_shownGraph].AddGameplay(gameplay as Gameplay);
-                            EditorUtility.SetDirty(_graphs[_shownGraph]);
+                            GameplayRepresentation addedGameplay = _graphs[_shownGraph].AddGameplay(gameplay as Gameplay);
+
+                            AssetDatabase.AddObjectToAsset(addedGameplay, "Assets/DungeonGenerator/ScriptableObjects/GameplayGraphs/SubGraphs/" + _graphs[_shownGraph].name + ".asset");
+                            EditorUtility.SetDirty(addedGameplay);
                             AssetDatabase.SaveAssets();
+
 
                         }, DataAccess.GetGameplayContainer().GetGameplay(i));
                 else

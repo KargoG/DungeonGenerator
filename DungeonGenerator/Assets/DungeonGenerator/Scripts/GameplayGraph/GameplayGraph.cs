@@ -45,13 +45,13 @@ namespace DungeonGenerator
             return newGraph;
         }
 
-        public void AddGameplay(Gameplay toAdd)
+        public GameplayRepresentation AddGameplay(Gameplay toAdd)
         {
             _gameplayInGraph.Add(GameplayRepresentation.Create(toAdd));
             if (_startingGameplay.Count == 0)
                 _startingGameplay.Add(_gameplayInGraph[0]);
 
-            AssetDatabase.AddObjectToAsset(_gameplayInGraph[_gameplayInGraph.Count - 1], "Assets/DungeonGenerator/ScriptableObjects/GameplayGraphs/LevelGraphs/" + name + ".asset");
+            return _gameplayInGraph[_gameplayInGraph.Count - 1];
         }
 
         public List<GameplayRepresentation> CreateCopyOfGameplay(out List<GameplayRepresentation> startingGameplay,
@@ -130,8 +130,18 @@ namespace DungeonGenerator
                 }
 
                 toPrepare.RemoveNextGameplay(replacementStart.Key);
-                //replacementStart.Key.RemovePreviousGameplay(toPrepare);
             }
+            foreach (GameplayRepresentation toPrepare in replacementStart.Key.NextGameplay)
+            {
+                foreach (GameplayRepresentation startingGameplay in start)
+                {
+                    toPrepare.AddPreviousGameplay(startingGameplay);
+                    startingGameplay.AddNextGameplay(toPrepare);
+                }
+
+                toPrepare.RemovePreviousGameplay(replacementStart.Key);
+            }
+
             foreach (GameplayRepresentation toPrepare in replacementStart.Value.NextGameplay)
             {
                 foreach (GameplayRepresentation endGameplay in end)
@@ -141,9 +151,31 @@ namespace DungeonGenerator
                 }
                 toPrepare.RemovePreviousGameplay(replacementStart.Value);
             }
+            foreach (GameplayRepresentation toPrepare in replacementStart.Value.PreviousGameplay)
+            {
+                foreach (GameplayRepresentation endGameplay in end)
+                {
+                    toPrepare.AddNextGameplay(endGameplay);
+                    endGameplay.AddPreviousGameplay(toPrepare);
+                }
+                toPrepare.RemoveNextGameplay(replacementStart.Value);
+            }
 
-            RemoveGameplay(replacementStart.Value);
+            if (_startingGameplay.Contains(replacementStart.Key))
+                foreach (GameplayRepresentation startingGameplay in start)
+                {
+                    _startingGameplay.Add(startingGameplay);
+                }
+
+            if (_endGameplay.Contains(replacementStart.Value))
+                foreach (GameplayRepresentation endGameplay in end)
+                {
+                    _endGameplay.Add(endGameplay);
+                }
+
+            
             RemoveGameplay(replacementStart.Key);
+            RemoveGameplay(replacementStart.Value);
             // TODO the replaed Gameplay is not longer linked but still in memory. Delete it if you dont want graphs to turn into garbage dumps
         }
 
@@ -241,6 +273,7 @@ namespace DungeonGenerator
         private int ComparePattern(List<Gameplay> thisString, List<Gameplay> patternString, int startPosition)
         {
             int pos = 0;
+            int positionOffset = 1;
 
             for (int i = 0; i < patternString.Count; i++, pos++)
             {
@@ -260,6 +293,7 @@ namespace DungeonGenerator
                     else if (thisString[startPosition + pos] == Gameplay.Empty) // Open Subgraph
                     {
                         i--;
+                        positionOffset++;
                         continue;
                     }
                     else
@@ -269,7 +303,7 @@ namespace DungeonGenerator
                 }
             }
 
-            pos--;
+            pos-= positionOffset;
 
             return pos;
         }
