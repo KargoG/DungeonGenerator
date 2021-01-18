@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEditor;
+//using UnityEditor;
 using UnityEngine;
 
 namespace DungeonGenerator
@@ -106,20 +106,21 @@ namespace DungeonGenerator
         }
 
 
-        public void InsertSubgraph(GameplayGraph toReplace, GameplayGraph replacement)
+        public List<GameplayRepresentation> InsertSubgraph(GameplayGraph toReplace, GameplayGraph replacement)
         {
             KeyValuePair<GameplayRepresentation, GameplayRepresentation> replacementStart = FindSubgraph(toReplace);
 
             if (replacementStart.Key == null)
-                return;
+                return null;
 
             List<GameplayRepresentation> replacementCopy = replacement.CreateCopyOfGameplay(out List<GameplayRepresentation> start, out List<GameplayRepresentation> end);
             _gameplayInGraph.AddRange(replacementCopy);
 
-            foreach (GameplayRepresentation copy in replacementCopy)
-            {
-                AssetDatabase.AddObjectToAsset(copy, "Assets/DungeonGenerator/ScriptableObjects/GameplayGraphs/LevelGraphs/" + name + ".asset");
-            }
+            // TODO check if this works without
+            //foreach (GameplayRepresentation copy in replacementCopy)
+            //{
+            //    AssetDatabase.AddObjectToAsset(copy, "Assets/DungeonGenerator/ScriptableObjects/GameplayGraphs/LevelGraphs/" + name + ".asset");
+            //}
 
 
             // Re-link connections
@@ -180,6 +181,8 @@ namespace DungeonGenerator
             RemoveGameplay(replacementStart.Value);
             // TODO the replaed Gameplay is not longer linked but still in memory. Delete it if you dont want graphs to turn into garbage dumps
             // TODO gameplay that comes after key and before value still needs the new start and end hooked up
+
+            return replacementCopy;
         }
 
         private KeyValuePair<GameplayRepresentation, GameplayRepresentation> FindSubgraph(GameplayGraph toSearch)

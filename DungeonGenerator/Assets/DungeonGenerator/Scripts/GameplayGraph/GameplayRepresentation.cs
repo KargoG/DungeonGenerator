@@ -131,8 +131,9 @@ namespace DungeonGenerator
             newGameplayRepresentation._gameplay = gameplay._gameplay;
             newGameplayRepresentation._nextGameplay = gameplay._nextGameplay;
             newGameplayRepresentation._previousGameplay = gameplay._previousGameplay;
+#if UNITY_EDITOR
             newGameplayRepresentation._nodeDimensions.position = gameplay._nodeDimensions.position;
-
+#endif
             return newGameplayRepresentation;
         }
 

@@ -102,11 +102,10 @@ namespace DungeonGenerator.Editor
             AssetDatabase.SaveAssets();
         }
 
-        public static GameplayGraph CreateGameplayGraph(string name)
+        public static GameplayGraph CreateGameplayGraph(GameplayGraph newGraph)
         {
-            GameplayGraph newGraph = GameplayGraph.CreateGraph(name);
             AssetDatabase.CreateAsset(newGraph,
-                "Assets/DungeonGenerator/ScriptableObjects/GameplayGraphs/LevelGraphs/" + name + ".asset");
+                "Assets/DungeonGenerator/ScriptableObjects/GameplayGraphs/LevelGraphs/" + newGraph.Name + ".asset");
 
             return newGraph;
         }
@@ -147,16 +146,18 @@ namespace DungeonGenerator.Editor
             AssetDatabase.SaveAssets();
         }
 
-        public static RoomGraph CreateRoomGraph(string name)
+        public static RoomGraph CreateRoomGraph(RoomGraph newGraph)
         {
-            RoomGraph newGraph = CreateInstance<RoomGraph>();
             AssetDatabase.CreateAsset(newGraph,
-                "Assets/DungeonGenerator/ScriptableObjects/RoomGraphs/" + name + ".asset");
+                "Assets/DungeonGenerator/ScriptableObjects/RoomGraphs/" + newGraph.Name + ".asset");
+
+            foreach (GameplayRepresentation gameplayToSave in newGraph.DungeonGraph[newGraph.DungeonGraph.Count - 1].GameplayInRoom)
+            {
+                AssetDatabase.AddObjectToAsset(gameplayToSave, "Assets/DungeonGenerator/ScriptableObjects/RoomGraphs/" + newGraph.Name + ".asset");
+            }
+            AssetDatabase.AddObjectToAsset(newGraph.DungeonGraph[newGraph.DungeonGraph.Count - 1], "Assets/DungeonGenerator/ScriptableObjects/RoomGraphs/" + newGraph.Name + ".asset");
 
             return newGraph;
-            //newGraph = RoomGraph.CreateStartingGraph(name, graphToTransform);
-            //EditorUtility.SetDirty(newGraph);
-            //AssetDatabase.SaveAssets();
         }
 
         private static RoomGraph LoadRoomGraph(string guid)

@@ -66,15 +66,9 @@ namespace DungeonGenerator
             return false;
         }
 
-        public Gameplay GetRandomPlacableGameplay()
+        public List<Gameplay> GetRandomPlacableGameplay()
         {
-            Gameplay toReturn = null;
-            do
-            {
-                toReturn = _definedGameplay[Random.Range(0, _definedGameplay.Count)];
-            } while (!toReturn.RandomPlacable);
-
-            return toReturn;
+            return _definedGameplay;
         }
 
         public string[] GetGameplayNames()

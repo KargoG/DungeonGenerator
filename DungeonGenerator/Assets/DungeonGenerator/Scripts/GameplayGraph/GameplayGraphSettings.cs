@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace DungeonGenerator
 {
@@ -37,5 +39,21 @@ namespace DungeonGenerator
             get { return _maxStartGraphLength; }
         }
 
+        [NonSerialized] private List<Gameplay> _randomlyPlaceableGameplay = new List<Gameplay>();
+        public void SetRandomPlacableGameplay(List<Gameplay> randomGameplay)
+        {
+            _randomlyPlaceableGameplay = randomGameplay;
+        }
+
+        public Gameplay GetRandomPlacableGameplay()
+        {
+            Gameplay toReturn = null;
+            do
+            {
+                toReturn = _randomlyPlaceableGameplay[Random.Range(0, _randomlyPlaceableGameplay.Count)];
+            } while (!toReturn.RandomPlacable);
+
+            return toReturn;
+        }
     }
 }

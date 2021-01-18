@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using DungeonGenerator;
-using DungeonGenerator.Editor;
 using UnityEditor;
-using UnityEditor.AppleTV;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace DungeonGenerator.Editor
 {
@@ -80,7 +75,12 @@ namespace DungeonGenerator.Editor
 
             foreach (KeyValuePair<Tuple<Gameplay, Gameplay>, float> connectable in _roomSettings.Connectables)
             {
-                graphToChange.ApplyMerges(connectable.Key, connectable.Value);
+                List<DungeonRoom> toDelete = graphToChange.ApplyMerges(connectable.Key, connectable.Value);
+
+                foreach (DungeonRoom delete in toDelete)
+                {
+                    AssetDatabase.RemoveObjectFromAsset(delete);
+                }
             }
         }
 
@@ -158,7 +158,7 @@ namespace DungeonGenerator.Editor
             }
 
             RoomGraph newGraph = RoomGraph.CreateStartingGraph(_newGraphName, _graphToConvert);
-
+            DataAccess.CreateRoomGraph(newGraph);
 
             // Give some basic positions
             for (int i = 0; i < newGraph.DungeonGraph.Count; i++)

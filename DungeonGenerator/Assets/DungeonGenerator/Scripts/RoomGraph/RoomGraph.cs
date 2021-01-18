@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using DungeonGenerator.Editor;
-using UnityEditor;
 using UnityEngine;
-using Random = System.Random;
 
 namespace DungeonGenerator
 {
@@ -35,8 +31,7 @@ namespace DungeonGenerator
 
         public static RoomGraph CreateStartingGraph(string name, GameplayGraph gameplayGraph)
         {
-            RoomGraph newGraph = DataAccess.CreateRoomGraph(name);
-
+            RoomGraph newGraph = CreateInstance<RoomGraph>();
             newGraph._name = name;
 
             List<GameplayRepresentation> gameplayInDungeon = gameplayGraph.CreateCopyOfGameplay();
@@ -65,12 +60,15 @@ namespace DungeonGenerator
                 _firstRoom = newRoom;
             }
 
-            AssetDatabase.AddObjectToAsset(gameplayInRoom, "Assets/DungeonGenerator/ScriptableObjects/RoomGraphs/" + name + ".asset");
-            AssetDatabase.AddObjectToAsset(_dungeonGraph[_dungeonGraph.Count - 1], "Assets/DungeonGenerator/ScriptableObjects/RoomGraphs/" + name + ".asset");
+            // TODO check if this works
+            //AssetDatabase.AddObjectToAsset(gameplayInRoom, "Assets/DungeonGenerator/ScriptableObjects/RoomGraphs/" + name + ".asset");
+            //AssetDatabase.AddObjectToAsset(_dungeonGraph[_dungeonGraph.Count - 1], "Assets/DungeonGenerator/ScriptableObjects/RoomGraphs/" + name + ".asset");
         }
 
-        public void ApplyMerges(Tuple<Gameplay, Gameplay> gameplayToMerge, float mergeLikeliness)
+        public List<DungeonRoom> ApplyMerges(Tuple<Gameplay, Gameplay> gameplayToMerge, float mergeLikeliness)
         {
+            List<DungeonRoom> hasToBeDeleted = new List<DungeonRoom>();
+
             List<DungeonRoom> roomThatCanBeMerged = _dungeonGraph.FindAll((DungeonRoom room) =>
             {
                 bool hasGameplay = room.LastGameplay.Gameplay == gameplayToMerge.Item1;
@@ -95,10 +93,14 @@ namespace DungeonGenerator
                 {
                     DungeonRoom removedRoom = roomToMerge.MergeWithNext(gameplayToMerge.Item2);
                     _dungeonGraph.Remove(removedRoom);
-                    AssetDatabase.RemoveObjectFromAsset(removedRoom);
+                    // TODO check if this works
+                    hasToBeDeleted.Add(removedRoom);
+                    //AssetDatabase.RemoveObjectFromAsset(removedRoom);
                 }
 
             }
+
+            return hasToBeDeleted;
         }
     }
 }

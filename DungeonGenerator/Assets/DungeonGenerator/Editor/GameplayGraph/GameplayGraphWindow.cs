@@ -145,7 +145,11 @@ namespace DungeonGenerator.Editor
                 return;
             }
 
-            GameplayGraphManager.CreateStartGraph(_newGraphName, _settings ? _settings : CreateInstance<GameplayGraphSettings>());
+            GameplayGraphSettings settingsToUse = _settings ? _settings : CreateInstance<GameplayGraphSettings>();
+            settingsToUse.SetRandomPlacableGameplay(DataAccess.GetGameplayContainer().GetRandomPlacableGameplay());
+            GameplayGraph newGraph = GameplayGraphManager.CreateStartGraph(_newGraphName, settingsToUse);
+            DataAccess.CreateGameplayGraph(newGraph);
+            
             ReloadGraphData();
         }
 
@@ -159,7 +163,11 @@ namespace DungeonGenerator.Editor
             {
                 foreach (GameplayGraph replacement in DataAccess.GetGameplaySubgraphConnections().GetConnections(replacableGraph))
                 {
-                    graphToChange.InsertSubgraph(replacableGraph, replacement);
+                    List<GameplayRepresentation> newGameplay = graphToChange.InsertSubgraph(replacableGraph, replacement);
+                    foreach (GameplayRepresentation copy in newGameplay)
+                    {
+                        AssetDatabase.AddObjectToAsset(copy, "Assets/DungeonGenerator/ScriptableObjects/GameplayGraphs/LevelGraphs/" + graphToChange.name + ".asset");
+                    }
                 }
             }
         }

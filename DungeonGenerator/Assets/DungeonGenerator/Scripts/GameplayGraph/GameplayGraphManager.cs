@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using DungeonGenerator.Editor;
-using UnityEditor;
 using UnityEngine;
+// TODO can i remove this?
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace DungeonGenerator
 {
@@ -20,15 +22,18 @@ namespace DungeonGenerator
             minStillNeededNodes = Mathf.Max(minStillNeededNodes, 0);
             maxStillNeededNodes = Mathf.Max(maxStillNeededNodes, 0);
 
-            GameplayGraph startGraph = DataAccess.CreateGameplayGraph(name);
+
+            GameplayGraph startGraph = GameplayGraph.CreateGraph(name);
 
             foreach (Gameplay gameplay in settings.StartGameplay) // Add Nodes to beginning
             {
                 GameplayRepresentation addedGameplay = startGraph.AddGameplay(gameplay);
 
+#if UNITY_EDITOR
                 AssetDatabase.AddObjectToAsset(addedGameplay, "Assets/DungeonGenerator/ScriptableObjects/GameplayGraphs/LevelGraphs/" + startGraph.name + ".asset");
                 EditorUtility.SetDirty(addedGameplay);
                 AssetDatabase.SaveAssets();
+#endif
             }
 
             int stillNeededNodes =
@@ -49,14 +54,16 @@ namespace DungeonGenerator
                 }
                 else
                 {
-                    addedGameplay = startGraph.AddGameplay(DataAccess.GetGameplayContainer().GetRandomPlacableGameplay());
+                    addedGameplay = startGraph.AddGameplay(settings.GetRandomPlacableGameplay());
                     stillNeededNodes--;
                 }
 
 
+#if UNITY_EDITOR
                 AssetDatabase.AddObjectToAsset(addedGameplay, "Assets/DungeonGenerator/ScriptableObjects/GameplayGraphs/LevelGraphs/" + startGraph.name + ".asset");
                 EditorUtility.SetDirty(addedGameplay);
                 AssetDatabase.SaveAssets();
+#endif
             }
 
 
@@ -64,9 +71,11 @@ namespace DungeonGenerator
             {
                 GameplayRepresentation addedGameplay = startGraph.AddGameplay(gameplay);
 
+#if UNITY_EDITOR
                 AssetDatabase.AddObjectToAsset(addedGameplay, "Assets/DungeonGenerator/ScriptableObjects/GameplayGraphs/LevelGraphs/" + startGraph.name + ".asset");
                 EditorUtility.SetDirty(addedGameplay);
                 AssetDatabase.SaveAssets();
+#endif
             }
 
             for (int i = 0; i < startGraph.GameplayInGraph.Count; i++)
@@ -78,12 +87,12 @@ namespace DungeonGenerator
                 }
             }
 
+#if UNITY_EDITOR
             for (int i = 0; i < startGraph.GameplayInGraph.Count; i++)
             {
                 startGraph.GameplayInGraph[i].Position = new Vector2(0, i * (50 + 20));
             }
 
-#if UNITY_EDITOR
             EditorUtility.SetDirty(startGraph);
             AssetDatabase.SaveAssets();
 #endif
