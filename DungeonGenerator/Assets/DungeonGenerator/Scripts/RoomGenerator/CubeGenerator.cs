@@ -27,8 +27,6 @@ public class CubeGenerator : MonoBehaviour
             SubdivideCube(ref wantedCubeVertices, ref wantedCubeTris, ref wantedCubeNormals);
         }
 
-        //CalculateNormals(ref wantedCubeNormals, ref wantedCubeVertices, ref wantedCubeTris);
-
         for (int i = 0; i < wantedCubeVertices.Count; i++)
         {
             wantedCubeVertices[i] = wantedCubeVertices[i] * halfSize;
@@ -106,6 +104,7 @@ public class CubeGenerator : MonoBehaviour
             int firstNewVertPos = GetNewVertex(ref cubeVertices, (cubeVertices[firstVertPos] + cubeVertices[secondVertPos]) / 2, ref cubeNormals);
             int secondNewVertPos = GetNewVertex(ref cubeVertices, (cubeVertices[secondVertPos] + cubeVertices[thirdVertPos]) / 2, ref cubeNormals);
             int thirdNewVertPos = GetNewVertex(ref cubeVertices, (cubeVertices[thirdVertPos] + cubeVertices[firstVertPos]) / 2, ref cubeNormals);
+
 
             cubeNormals[firstNewVertPos] = (cubeNormals[firstVertPos] + cubeNormals[secondVertPos]) / 2;
             cubeNormals[secondNewVertPos] = (cubeNormals[secondVertPos] + cubeNormals[thirdVertPos]) / 2;

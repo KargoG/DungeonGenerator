@@ -86,32 +86,6 @@ public class BaseRoomGenerator : MonoBehaviour, IRoomCreator
         _toShow.triangles = originalTris.ToArray();
     }
 
-    private void CleanUp()
-    {
-        List<Vector3> vertices = new List<Vector3>(_toShow.vertices);
-        List<Vector3> normals = new List<Vector3>(_toShow.normals);
-        List<int> tris = new List<int>(_toShow.triangles);
-
-        for (int i = 0; i < vertices.Count; i++)
-        {
-            int closestVertIndex = GetClosestVertexInMesh(vertices[i], vertices);
-
-            if (Vector3.Dot(normals[closestVertIndex], normals[i]) < -0.9f)
-            {
-                while (tris.Contains(closestVertIndex))
-                {
-                    RemoveTrianglesWithIndex(ref tris, closestVertIndex);
-                }
-                while (tris.Contains(i))
-                {
-                    RemoveTrianglesWithIndex(ref tris, i);
-                }
-            }
-        }
-
-        _toShow.triangles = tris.ToArray();
-    }
-
     public void SetUpConnections(GameObject[] roomsToConnectTo)
     {
         print("miau");
@@ -439,6 +413,7 @@ public class BaseRoomGenerator : MonoBehaviour, IRoomCreator
 
     private void AddAnchor(OperationSymbols anchorPosition, Vector3 center, Vector3 size, int depth)
     {
+        int anchorPointsBeforeAdd = _anchorPoints[anchorPosition].Count;
         _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(size.x, size.y, 0), depth));
         _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(size.x, -size.y, 0), depth));
         _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(-size.x, size.y, 0), depth));
@@ -463,14 +438,14 @@ public class BaseRoomGenerator : MonoBehaviour, IRoomCreator
         _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(-size.x, -size.y, size.z), depth));
         _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(-size.x, -size.y, -size.z), depth));
 
-        RemoveOverlappingAnchors(anchorPosition);
+        RemoveOverlappingAnchors(anchorPosition, anchorPointsBeforeAdd);
     }
 
-    private void RemoveOverlappingAnchors(OperationSymbols anchorPosition)
+    private void RemoveOverlappingAnchors(OperationSymbols anchorPosition, int numberOfAnchorsNotToCheck)
     {
         List<Tuple<Vector3, int>> overlappingAnchors = new List<Tuple<Vector3, int>>();
 
-        for (int i = 0; i < _anchorPoints[anchorPosition].Count; i++)
+        for (int i = numberOfAnchorsNotToCheck; i < _anchorPoints[anchorPosition].Count; i++)
         {
             foreach (Bounds bounds in _RectsInMesh)
             {
