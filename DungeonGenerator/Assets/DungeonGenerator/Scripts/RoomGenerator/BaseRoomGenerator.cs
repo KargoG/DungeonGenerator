@@ -38,6 +38,18 @@ public class BaseRoomGenerator : MonoBehaviour, IRoomCreator
         GetComponent<MeshFilter>().mesh = _toShow;
     }
 
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.blue;
+        foreach (KeyValuePair<OperationSymbols, List<Tuple<Vector3, int>>> anchorPoint in _anchorPoints)
+        {
+            foreach (Tuple<Vector3, int> point in anchorPoint.Value)
+            {
+                Gizmos.DrawSphere(point.Item1 + transform.position, 0.2f);
+            }
+        }
+    }
+
     private void MakeDoubleSided()
     {
         List<Vector3> originalVerts = new List<Vector3>(_toShow.vertices);
@@ -427,104 +439,29 @@ public class BaseRoomGenerator : MonoBehaviour, IRoomCreator
 
     private void AddAnchor(OperationSymbols anchorPosition, Vector3 center, Vector3 size, int depth)
     {
-        string operationName = Enum.GetName(typeof(OperationSymbols), anchorPosition);
+        _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(size.x, size.y, 0), depth));
+        _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(size.x, -size.y, 0), depth));
+        _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(-size.x, size.y, 0), depth));
+        _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(-size.x, -size.y, 0), depth));
 
-        if (operationName.Contains("MX"))
-        {
-            if (operationName.Contains("MY"))
-            {
-                if (operationName.Contains("MZ"))
-                {
-                    _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(-size.x, -size.y, -size.z), depth));
-                }
-                else if (operationName.Contains("Z"))
-                {
-                    _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(-size.x, -size.y, size.z), depth));
-                }
-                _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(-size.x, -size.y, 0), depth));
-            }
-            else if (operationName.Contains("Y"))
-            {
-                if (operationName.Contains("MZ"))
-                {
-                    _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(-size.x, size.y, -size.z), depth));
-                }
-                else if(operationName.Contains("Z"))
-                {
-                    _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(-size.x, size.y, size.z), depth));
-                }
-                _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(-size.x, size.y, 0), depth));
-            }
+        _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(0, size.y, size.z), depth));
+        _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(0, size.y, -size.z), depth));
+        _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(0, -size.y, size.z), depth));
+        _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(0, -size.y, -size.z), depth));
 
-            if (operationName.Contains("MZ"))
-            {
-                _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(-size.x, 0, -size.z), depth));
-            }
-            else if (operationName.Contains("Z"))
-            {
-                _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(-size.x, 0, size.z), depth));
-            }
-        }
-        else if(operationName.Contains("X"))
-        {
-            if (operationName.Contains("MY"))
-            {
-                if (operationName.Contains("MZ"))
-                {
-                    _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(size.x, -size.y, -size.z), depth));
-                }
-                else if (operationName.Contains("Z"))
-                {
-                    _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(size.x, -size.y, size.z), depth));
-                }
-                _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(size.x, -size.y, 0), depth));
-            }
-            else if (operationName.Contains("Y"))
-            {
-                if (operationName.Contains("MZ"))
-                {
-                    _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(size.x, size.y, -size.z), depth));
-                }
-                else if (operationName.Contains("Z"))
-                {
-                    _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(size.x, size.y, size.z), depth));
-                }
-                _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(size.x, size.y, 0), depth));
+        _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(size.x, 0, size.z), depth));
+        _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(size.x, 0, -size.z), depth));
+        _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(-size.x, 0, size.z), depth));
+        _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(-size.x, 0, -size.z), depth));
 
-            }
-            if (operationName.Contains("MZ"))
-            {
-                _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(size.x, 0, -size.z), depth));
-            }
-            else if (operationName.Contains("Z"))
-            {
-                _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(size.x, 0, size.z), depth));
-            }
-        }
-        if (operationName.Contains("MY"))
-        {
-            if (operationName.Contains("MZ"))
-            {
-                _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(0, size.y, -size.z), depth));
-            }
-            else if (operationName.Contains("Z"))
-            {
-                _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(0, size.y, size.z), depth));
-            }
-        }
-        else if (operationName.Contains("Y"))
-        {
-            if (operationName.Contains("MZ"))
-            {
-                _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(0, -size.y, -size.z), depth));
-            }
-            else if (operationName.Contains("Z"))
-            {
-                _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(0, -size.y, size.z), depth));
-            }
-        }
-
-
+        _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(size.x, size.y, size.z), depth));
+        _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(size.x, size.y, -size.z), depth));
+        _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(size.x, -size.y, size.z), depth));
+        _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(size.x, -size.y, -size.z), depth));
+        _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(-size.x, size.y, size.z), depth));
+        _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(-size.x, size.y, -size.z), depth));
+        _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(-size.x, -size.y, size.z), depth));
+        _anchorPoints[anchorPosition].Add(new Tuple<Vector3, int>(center + new Vector3(-size.x, -size.y, -size.z), depth));
 
         RemoveOverlappingAnchors(anchorPosition);
     }
@@ -538,6 +475,10 @@ public class BaseRoomGenerator : MonoBehaviour, IRoomCreator
             foreach (Bounds bounds in _RectsInMesh)
             {
                 if (bounds.Contains(_anchorPoints[anchorPosition][i].Item1))
+                {
+                    overlappingAnchors.Add(_anchorPoints[anchorPosition][i]);
+                }
+                else if(bounds.SqrDistance(_anchorPoints[anchorPosition][i].Item1) < 0.01f)
                 {
                     overlappingAnchors.Add(_anchorPoints[anchorPosition][i]);
                 }
