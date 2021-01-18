@@ -7,6 +7,7 @@ using UnityEngine.Rendering;
 public class CubeGenerator : MonoBehaviour
 {
     private static Vector3[] _baseCubeVertices;
+    private static Vector3[] _baseCubeNormals;
     private static int[] _baseCubeTris;
 
     public static Mesh GenerateCube(float halfSize, int subdivisions, Vector3 offset)
@@ -17,13 +18,16 @@ public class CubeGenerator : MonoBehaviour
         }
 
         List<Vector3> wantedCubeVertices = new List<Vector3>(_baseCubeVertices);
+        List<Vector3> wantedCubeNormals = new List<Vector3>(_baseCubeNormals);
         List<int> wantedCubeTris = new List<int>(_baseCubeTris);
 
 
         for (int i = 0; i < subdivisions; i++)
         {
-            SubdivideCube(ref wantedCubeVertices, ref wantedCubeTris);
+            SubdivideCube(ref wantedCubeVertices, ref wantedCubeTris, ref wantedCubeNormals);
         }
+
+        //CalculateNormals(ref wantedCubeNormals, ref wantedCubeVertices, ref wantedCubeTris);
 
         for (int i = 0; i < wantedCubeVertices.Count; i++)
         {
@@ -38,12 +42,46 @@ public class CubeGenerator : MonoBehaviour
 
         Mesh baseCube = new Mesh();
         baseCube.vertices = wantedCubeVertices.ToArray();
+        baseCube.normals = wantedCubeNormals.ToArray();
         baseCube.triangles = wantedCubeTris.ToArray();
 
         return baseCube;
     }
 
-    private static int GetNewVertex(ref List<Vector3> verticis, Vector3 newVert)
+    private static void CalculateNormals(ref List<Vector3> cubeNormals, ref List<Vector3> cubeVertices, ref List<int> cubeTris)
+    {
+        cubeNormals.Clear();
+        foreach (Vector3 vertex in cubeVertices)
+        {
+            Vector3 newNormal = new Vector3();
+            int toDivide = 0;
+
+            for (int i = 0; i < cubeTris.Count; i++)
+            {
+                if (cubeVertices[cubeTris[i]] == vertex)
+                {
+                    switch (i % 3)
+                    {
+                        case 0:
+                            newNormal += Vector3.Cross(cubeVertices[cubeTris[i + 1]] - vertex, cubeVertices[cubeTris[i + 2]] - vertex);
+                            break;
+                        case 1:
+                            newNormal += Vector3.Cross(cubeVertices[cubeTris[i + 1]] - vertex, cubeVertices[cubeTris[i - 1]] - vertex);
+                            break;
+                        case 2:
+                            newNormal += Vector3.Cross(cubeVertices[cubeTris[i - 2]] - vertex, cubeVertices[cubeTris[i - 1]] - vertex);
+                            break;
+                    }
+
+                    toDivide++;
+                }
+            }
+
+            cubeNormals.Add(newNormal / toDivide);
+        }
+    }
+
+    private static int GetNewVertex(ref List<Vector3> verticis, Vector3 newVert, ref List<Vector3> cubeNormals)
     {
         if (verticis.Contains(newVert))
         {
@@ -51,10 +89,11 @@ public class CubeGenerator : MonoBehaviour
         }
 
         verticis.Add(newVert);
+        cubeNormals.Add(Vector3.up);
         return verticis.Count - 1;
     }
 
-    private static void SubdivideCube(ref List<Vector3> cubeVertices, ref List<int> cubeTris)
+    private static void SubdivideCube(ref List<Vector3> cubeVertices, ref List<int> cubeTris, ref List<Vector3> cubeNormals)
     {
         List<int> newTris = new List<int>();
 
@@ -64,9 +103,13 @@ public class CubeGenerator : MonoBehaviour
             int secondVertPos = cubeTris[i+1];
             int thirdVertPos = cubeTris[i+2];
 
-            int firstNewVertPos = GetNewVertex(ref cubeVertices, (cubeVertices[firstVertPos] + cubeVertices[secondVertPos]) / 2);
-            int secondNewVertPos = GetNewVertex(ref cubeVertices, (cubeVertices[secondVertPos] + cubeVertices[thirdVertPos]) / 2);
-            int thirdNewVertPos = GetNewVertex(ref cubeVertices, (cubeVertices[thirdVertPos] + cubeVertices[firstVertPos]) / 2);
+            int firstNewVertPos = GetNewVertex(ref cubeVertices, (cubeVertices[firstVertPos] + cubeVertices[secondVertPos]) / 2, ref cubeNormals);
+            int secondNewVertPos = GetNewVertex(ref cubeVertices, (cubeVertices[secondVertPos] + cubeVertices[thirdVertPos]) / 2, ref cubeNormals);
+            int thirdNewVertPos = GetNewVertex(ref cubeVertices, (cubeVertices[thirdVertPos] + cubeVertices[firstVertPos]) / 2, ref cubeNormals);
+
+            cubeNormals[firstNewVertPos] = (cubeNormals[firstVertPos] + cubeNormals[secondVertPos]) / 2;
+            cubeNormals[secondNewVertPos] = (cubeNormals[secondVertPos] + cubeNormals[thirdVertPos]) / 2;
+            cubeNormals[thirdNewVertPos] = (cubeNormals[thirdVertPos] + cubeNormals[firstVertPos]) / 2;
 
 
             newTris.Add(firstVertPos); newTris.Add(firstNewVertPos); newTris.Add(thirdNewVertPos);
@@ -94,6 +137,19 @@ public class CubeGenerator : MonoBehaviour
             new Vector3(1, 1, -1),
             new Vector3(-1, -1, -1),
             new Vector3(1, -1, -1)
+        };
+
+        _baseCubeNormals = new Vector3[]
+        {
+            new Vector3(1, -1, -1),
+            new Vector3(-1, -1, -1),
+            new Vector3(1, 1, -1),
+            new Vector3(-1, 1, -1),
+
+            new Vector3(1, -1, 1),
+            new Vector3(-1, -1, 1),
+            new Vector3(1, 1, 1),
+            new Vector3(-1, 1, 1)
         };
 
         _baseCubeTris = new int[]

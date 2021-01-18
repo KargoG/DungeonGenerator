@@ -35,7 +35,7 @@ public class InstructionGenerator : ScriptableObject
 
     public static List<OperationSymbols> GenerateInstructions(int reproductionIterations)
     {
-        List<OperationSymbols> instructionString = GenerateStartString(5);
+        List<OperationSymbols> instructionString = GenerateStartString(3);
 
         GenerateReproductionRules();
 
