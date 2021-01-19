@@ -92,8 +92,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f484761df34b32c44a020cb42d0f2d78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _boxSize: 7.5
-  _sizeChangePerIteration: 0.5
+  _boxSize: 10
+  _sizeChangePerIteration: 0.33
+  _subdivisions: 5
   _mirrorXYPlane: 1
   _mirrorYZPlane: 1
   _mirrorXZPlane: 1

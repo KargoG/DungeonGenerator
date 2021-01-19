@@ -10,6 +10,7 @@ public class BaseRoomGenerator : MonoBehaviour, IRoomCreator
 {
     [SerializeField] private float _boxSize = 10;
     [SerializeField] private float _sizeChangePerIteration = 0.6f;
+    [SerializeField] private int _subdivisions = 3;
     [SerializeField] private bool _mirrorXYPlane = true;
     [SerializeField] private bool _mirrorYZPlane = true;
     [SerializeField] private bool _mirrorXZPlane = true;
@@ -21,7 +22,7 @@ public class BaseRoomGenerator : MonoBehaviour, IRoomCreator
 
     public void CreateRoom(DungeonRoom dungeonRoom) 
     {
-        _toShow = CubeGenerator.GenerateCube(_boxSize, 3, new Vector3());
+        _toShow = CubeGenerator.GenerateCube(_boxSize, _subdivisions, new Vector3());
         _RectsInMesh.Add(new Bounds(Vector3.zero, Vector3.one * _boxSize * 2 * 0.99f));
 
         PrepareAnchors();
@@ -102,7 +103,7 @@ public class BaseRoomGenerator : MonoBehaviour, IRoomCreator
         Vector3 newCubeSize = new Vector3(_boxSize, _boxSize, _boxSize) *
                               Mathf.Pow(_sizeChangePerIteration, anchorPos.Item2);
 
-        Mesh secondMesh = CubeGenerator.GenerateCube(_boxSize * Mathf.Pow(_sizeChangePerIteration, anchorPos.Item2), 3, anchorPos.Item1);
+        Mesh secondMesh = CubeGenerator.GenerateCube(_boxSize * Mathf.Pow(_sizeChangePerIteration, anchorPos.Item2), _subdivisions, anchorPos.Item1);
 
         AddAnchor(position, anchorPos.Item1, newCubeSize, anchorPos.Item2 + 1);
         AddShownMesh(ref secondMesh, new Bounds(anchorPos.Item1, newCubeSize * 2 * 0.99f));
@@ -120,7 +121,7 @@ public class BaseRoomGenerator : MonoBehaviour, IRoomCreator
             {
                 newCubeSize = new Vector3(_boxSize, _boxSize, _boxSize) *
                               Mathf.Pow(_sizeChangePerIteration, xMPos.Item2);
-                secondMesh = CubeGenerator.GenerateCube(_boxSize * Mathf.Pow(_sizeChangePerIteration, xMPos.Item2), 3, xMPos.Item1);
+                secondMesh = CubeGenerator.GenerateCube(_boxSize * Mathf.Pow(_sizeChangePerIteration, xMPos.Item2), _subdivisions, xMPos.Item1);
 
                 AddAnchor(operationPositions[nextOperation++], xMPos.Item1, newCubeSize, xMPos.Item2 + 1);
                 AddShownMesh(ref secondMesh, new Bounds(xMPos.Item1, newCubeSize * 2 * 0.99f));
@@ -134,7 +135,7 @@ public class BaseRoomGenerator : MonoBehaviour, IRoomCreator
             {
                 newCubeSize = new Vector3(_boxSize, _boxSize, _boxSize) *
                               Mathf.Pow(_sizeChangePerIteration, yMPos.Item2);
-                secondMesh = CubeGenerator.GenerateCube(_boxSize * Mathf.Pow(_sizeChangePerIteration, yMPos.Item2), 3, yMPos.Item1);
+                secondMesh = CubeGenerator.GenerateCube(_boxSize * Mathf.Pow(_sizeChangePerIteration, yMPos.Item2), _subdivisions, yMPos.Item1);
 
                 AddAnchor(operationPositions[nextOperation++], yMPos.Item1, newCubeSize, yMPos.Item2 + 1);
                 AddShownMesh(ref secondMesh, new Bounds(yMPos.Item1, newCubeSize * 2 * 0.99f));
@@ -449,6 +450,7 @@ public class BaseRoomGenerator : MonoBehaviour, IRoomCreator
         {
             foreach (Bounds bounds in _RectsInMesh)
             {
+                bounds.Expand(1.2f); // Rescale bounds for this since they are actually at 99% of their size and might miss anchors like this
                 if (bounds.Contains(_anchorPoints[anchorPosition][i].Item1))
                 {
                     overlappingAnchors.Add(_anchorPoints[anchorPosition][i]);
@@ -457,6 +459,7 @@ public class BaseRoomGenerator : MonoBehaviour, IRoomCreator
                 {
                     overlappingAnchors.Add(_anchorPoints[anchorPosition][i]);
                 }
+                bounds.Expand(1f/1.2f);
             }
         }
 
