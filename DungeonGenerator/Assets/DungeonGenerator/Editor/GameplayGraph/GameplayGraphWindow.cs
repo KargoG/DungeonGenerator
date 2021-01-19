@@ -51,7 +51,7 @@ namespace DungeonGenerator.Editor
             HandleEvents(e);
             e.mousePosition = originalMousePos;
 
-            if (GUILayout.Button("Save Stuff"))
+            if (GUILayout.Button("Save"))
             {
                 EditorUtility.SetDirty(_graphs[_shownGraph]);
                 AssetDatabase.SaveAssets();

@@ -98,3 +98,5 @@ MonoBehaviour:
   _mirrorXYPlane: 1
   _mirrorYZPlane: 1
   _mirrorXZPlane: 1
+  _doorPre: {fileID: 7797836165257941898, guid: 08817fe5e88683d40a482e9bbb391ff4,
+    type: 3}

@@ -20,6 +20,9 @@ public class BaseRoomGenerator : MonoBehaviour, IRoomCreator
     private Mesh _toShow;
     private List<Bounds> _RectsInMesh = new List<Bounds>();
 
+    private List<IRoomConnector> _roomConnectors = new List<IRoomConnector>();
+    [SerializeField] private Door _doorPre = null;
+
     public void CreateRoom(DungeonRoom dungeonRoom) 
     {
         _toShow = CubeGenerator.GenerateCube(_boxSize, _subdivisions, new Vector3());
@@ -34,9 +37,18 @@ public class BaseRoomGenerator : MonoBehaviour, IRoomCreator
             AddCubeAtAnchor(instruction);
         }
 
-        MakeDoubleSided();
+        //MakeDoubleSided();
 
         GetComponent<MeshFilter>().mesh = _toShow;
+
+        foreach (DungeonRoom nextRoom in dungeonRoom.NextRoom)
+        {
+            _roomConnectors.Add(Instantiate(_doorPre, transform));
+        }
+        foreach (DungeonRoom previousRoom in dungeonRoom.PreviousRoom)
+        {
+            _roomConnectors.Add(Instantiate(_doorPre, transform));
+        }
     }
 
     void OnDrawGizmosSelected()
@@ -89,7 +101,12 @@ public class BaseRoomGenerator : MonoBehaviour, IRoomCreator
 
     public void SetUpConnections(GameObject[] roomsToConnectTo)
     {
-        print("miau");
+        if (roomsToConnectTo.Length != _roomConnectors.Count)
+            Debug.LogError("Number of doors and number of connected Rooms needs to be the same!");
+        for (int i = 0; i < _roomConnectors.Count; i++)
+        {
+            _roomConnectors[i].SetUpConnection(roomsToConnectTo[i]);
+        }
     }
 
     private void AddCubeAtAnchor(OperationSymbols position)
