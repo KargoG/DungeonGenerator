@@ -10,9 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 03b9c5bb38d3e5a49aaccb157bdc662b, type: 3}
-  m_Name: new Room Creation Settings
+  m_Name: RoomSettings
   m_EditorClassIdentifier: 
-  _numberOfFields: 0
-  _firstGameplay: []
-  _secondGameplay: []
-  _likeliness: []
+  _numberOfFields: 1
+  _firstGameplay:
+  - {fileID: 11400000, guid: ef3ca1bf8d92cdd45aaf103aa18b7fba, type: 2}
+  _secondGameplay:
+  - {fileID: 11400000, guid: 3504246c1504ada489393ab260927ac0, type: 2}
+  _likeliness:
+  - 0

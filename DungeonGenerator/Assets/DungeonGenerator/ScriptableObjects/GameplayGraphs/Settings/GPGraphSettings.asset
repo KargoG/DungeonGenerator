@@ -16,7 +16,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2c7a54b4f2b469344ad76a354fd7e90e, type: 2}
   - {fileID: 11400000, guid: ef3ca1bf8d92cdd45aaf103aa18b7fba, type: 2}
   - {fileID: 11400000, guid: 5a50af3dc677cbe49ba8301fcd144ce2, type: 2}
-  _endGameplay: []
+  _endGameplay:
+  - {fileID: 11400000, guid: 3504246c1504ada489393ab260927ac0, type: 2}
+  - {fileID: 11400000, guid: ca38b929ad3ae774d92575dda2813fee, type: 2}
+  - {fileID: 11400000, guid: 15e6a7355d5af3f478ff413e94918a42, type: 2}
   _mustIncludeGameplay: []
-  _minStartGraphLength: 5
+  _minStartGraphLength: 7
   _maxStartGraphLength: 10
